@@ -4,7 +4,7 @@ extends CharacterBody3D
 signal command_issued(point: Vector3, collider: Object)
 
 @export_group("Movement")
-@export var speed := 5.0
+@export var walk_speed := 5.0
 @export var sprint_speed := 8.0
 @export var jump_velocity := 4.5
 @export var acceleration := 30.0
@@ -38,13 +38,31 @@ func _ready() -> void:
 	aim_ray.enabled = true
 
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
+	# jumping and falling
 	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	# Handle jump.
-	#if Input.is_action_just_pressed("jump") and is_on_floor():
-		#velocity.y = JUMP_VELOCITY
+		velocity.y -= gravity * delta
+	elif Input.is_action_just_pressed("jump"):
+		velocity.y = jump_velocity
+	
+	var input_dir := Input.get_vector("left", "right", "forward", "backward")
+	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	var speed := sprint_speed if Input.is_action_pressed("sprint") else walk_speed
+	var target := direction * speed
+	
+	velocity.x = move_toward(velocity.x, target.x, acceleration * delta)
+	velocity.z = move_toward(velocity.z, target.z, acceleration * delta)
 
 	move_and_slide()
+	_update_aim()
 	
+func _update_aim() -> void:
+	aim_ray.global_transform = camera.global_transform
+	aim_ray.force_raycast_update()
+	
+	has_aim = aim_ray.is_colliding()
+	if has_aim:
+		aim_point = aim_ray.get_collision_point()
+		aim_collider = aim_ray.get_collider()
+	else: 
+		aim_point = camera.global_position - camera.global_basis.z * aim_range
+		aim_collider = null

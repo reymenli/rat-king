@@ -25,5 +25,4 @@ mesh = SubResource("BoxMesh_jmrmx")
 [node name="player" parent="." unique_id=995763605 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.649919, 0)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=883386383]
-transform = Transform3D(0.8508564, 0.5182917, -0.08612201, 0, 0.16391759, 0.98647404, 0.52539825, -0.8393478, 0.13947032, 2.503395e-06, 9.785108, -4.053116e-06)
+[editable path="player"]
