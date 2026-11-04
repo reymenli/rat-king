@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://crphw7tooxyfw"]
+
+[ext_resource type="Script" uid="uid://b4a6jw12ivi88" path="res://Scripts/navigation_region_3d.gd" id="1_3a6ej"]
+[ext_resource type="PackedScene" uid="uid://qpr767ijtdi1" path="res://Scenes/rats.tscn" id="1_xv880"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3a6ej"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_0bjeg"]
+sky_material = SubResource("ProceduralSkyMaterial_3a6ej")
+
+[sub_resource type="Environment" id="Environment_u2job"]
+background_mode = 2
+sky = SubResource("Sky_0bjeg")
+glow_enabled = true
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_e1os3"]
+vertices = PackedVector3Array(-4.577377, 0.42066598, -1.5773768, -3.3273768, 0.42066598, -2.0773768, -3.8273768, 0.42066598, -2.3273768, -1.5773768, 0.42066598, -2.5773768, -1.3273768, 0.42066598, -2.3273768, -0.57737684, 0.42066598, -3.3273768, -1.8273768, 0.42066598, -3.8273768, -4.577377, 0.42066598, -4.577377, -2.8273768, 0.42066598, -3.8273768, -3.8273768, 0.42066598, -3.0773768, 0.42262316, 0.42066598, -3.3273768, 0.67262316, 0.42066598, -2.0773768, 1.1726232, 0.42066598, -1.8273768, 2.1726232, 0.42066598, -3.0773768, 4.672623, 0.42066598, -4.577377, 3.1726232, 0.42066598, -2.8273768, 3.1726232, 0.42066598, -1.8273768, 3.1726232, 0.42066598, 0.67262316, 3.4226232, 0.42066598, 1.4226232, 4.672623, 0.42066598, 1.6726232, 1.9226232, 0.42066598, -0.82737684, 2.4226232, 0.42066598, 0.67262316, -1.3273768, 0.42066598, -1.5773768, -4.577377, 0.42066598, 4.672623, -2.5773768, 0.42066598, 2.6726232, -2.8273768, 0.42066598, 1.4226232, -1.5773768, 0.42066598, 4.672623, -1.5773768, 0.42066598, 3.1726232, -1.5773768, 0.42066598, 1.1726232, -1.0773768, 0.42066598, 1.6726232, -0.82737684, 0.42066598, -1.3273768, 1.1726232, 0.42066598, -1.0773768, -0.07737684, 0.42066598, -1.3273768, 4.672623, 0.42066598, 4.672623, 2.9226232, 0.42066598, 2.9226232, 1.9226232, 0.42066598, 2.9226232, -0.82737684, 0.42066598, 2.9226232, 1.6726232, 0.42066598, 1.9226232)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(4, 3, 5), PackedInt32Array(5, 3, 6), PackedInt32Array(6, 8, 7), PackedInt32Array(2, 0, 9), PackedInt32Array(9, 0, 7), PackedInt32Array(11, 10, 12), PackedInt32Array(12, 10, 13), PackedInt32Array(10, 6, 13), PackedInt32Array(13, 6, 14), PackedInt32Array(14, 6, 7), PackedInt32Array(14, 16, 15), PackedInt32Array(18, 17, 19), PackedInt32Array(19, 17, 16), PackedInt32Array(19, 16, 14), PackedInt32Array(8, 9, 7), PackedInt32Array(21, 20, 17), PackedInt32Array(17, 20, 16), PackedInt32Array(10, 5, 6), PackedInt32Array(14, 15, 13), PackedInt32Array(4, 22, 3), PackedInt32Array(3, 22, 1), PackedInt32Array(24, 23, 25), PackedInt32Array(25, 23, 0), PackedInt32Array(27, 26, 24), PackedInt32Array(24, 26, 23), PackedInt32Array(30, 29, 28), PackedInt32Array(22, 30, 1), PackedInt32Array(1, 30, 0), PackedInt32Array(0, 30, 28), PackedInt32Array(0, 28, 25), PackedInt32Array(12, 31, 11), PackedInt32Array(11, 31, 32), PackedInt32Array(35, 34, 33), PackedInt32Array(27, 36, 26), PackedInt32Array(26, 36, 35), PackedInt32Array(26, 35, 33), PackedInt32Array(30, 32, 31), PackedInt32Array(18, 19, 34), PackedInt32Array(34, 19, 33), PackedInt32Array(31, 20, 21), PackedInt32Array(36, 37, 35), PackedInt32Array(21, 37, 31), PackedInt32Array(31, 37, 30), PackedInt32Array(30, 37, 29), PackedInt32Array(29, 37, 36)]
+geometry_parsed_geometry_type = 1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_e1os3"]
+size = Vector2(10, 10)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0cie1"]
+points = PackedVector3Array(5.077377, 0.07933401, 5.077377, -5.077377, -0.07933401, -5.077377, -5.077377, 0.07933401, -5.077377, 5.077377, -0.07933401, -5.077377, -5.077377, -0.07933401, 5.077377, -5.077377, 0.07933401, 5.077377, 5.077377, 0.07933401, -5.077377, 5.077377, -0.07933401, 5.077377)
+
+[sub_resource type="BoxMesh" id="BoxMesh_e1os3"]
+size = Vector3(4.8593903, 1, 0.1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_xv880"]
+points = PackedVector3Array(-0.50793654, -0.50793654, -0.05792563, 0.47900528, 0.47900528, 0.049999997, 0.47900528, -0.47900528, 0.049999997, 0.50793654, 0.50793654, -0.05792563, -0.47900528, 0.47900528, 0.049999997, 0.50793654, -0.50793654, -0.05792563, -0.50793654, 0.50793654, -0.05792563, -0.47900528, -0.47900528, 0.049999997)
+
+[node name="rat_test" type="Node3D" unique_id=93753335]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1092493276]
+environment = SubResource("Environment_u2job")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=851198356]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 3.273975, 8.338552, 0)
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=833015533 node_paths=PackedStringArray("camera", "rat")]
+navigation_mesh = SubResource("NavigationMesh_e1os3")
+script = ExtResource("1_3a6ej")
+camera = NodePath("../Camera3D")
+rat = NodePath("../Rats")
+
+[node name="Floor" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=463384361]
+mesh = SubResource("PlaneMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Floor" unique_id=591152819]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Floor/StaticBody3D" unique_id=2022534045]
+shape = SubResource("ConvexPolygonShape3D_0cie1")
+
+[node name="Wall" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=1135240617]
+transform = Transform3D(0.4472964, 0, -0.8943858, 0, 1, 0, 0.8943858, 0, 0.4472964, -1.8478167, 0.5, 2.2100728)
+layers = 2
+mesh = SubResource("BoxMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Wall" unique_id=1705921164]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall/StaticBody3D" unique_id=1272736094]
+shape = SubResource("ConvexPolygonShape3D_xv880")
+
+[node name="Wall2" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=2034407886]
+transform = Transform3D(0.6967713, 0, 0.7172933, 0, 1, 0, -0.7172933, 0, 0.6967713, 2.1372616, 0.5000001, -1.9260907)
+layers = 2
+mesh = SubResource("BoxMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Wall2" unique_id=310704303]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall2/StaticBody3D" unique_id=1355311681]
+shape = SubResource("ConvexPolygonShape3D_xv880")
+
+[node name="Wall3" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=1155033935]
+transform = Transform3D(-0.9183532, 0, -0.3957618, 0, 1, 0, 0.3957618, 0, -0.9183532, -2.630846, 0.4677043, -2.957612)
+layers = 2
+mesh = SubResource("BoxMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Wall3" unique_id=547362654]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall3/StaticBody3D" unique_id=1306697238]
+shape = SubResource("ConvexPolygonShape3D_xv880")
+
+[node name="Wall4" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=1099293802]
+transform = Transform3D(-0.3269264, 0, -0.9450497, 0, 1, 0, 0.9450497, 0, -0.3269264, 2.5886838, 0.5, 1.8497374)
+layers = 2
+mesh = SubResource("BoxMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Wall4" unique_id=890964452]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall4/StaticBody3D" unique_id=2046625352]
+shape = SubResource("ConvexPolygonShape3D_xv880")
+
+[node name="Wall5" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=30154012]
+transform = Transform3D(-0.621945, 0, -0.7830614, 0, 1, 0, 0.7830614, 0, -0.621945, -0.28544927, 0.53168416, -2.277971)
+layers = 2
+mesh = SubResource("BoxMesh_e1os3")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Wall5" unique_id=1829958988]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall5/StaticBody3D" unique_id=1072550995]
+shape = SubResource("ConvexPolygonShape3D_xv880")
+
+[node name="Rats" parent="." unique_id=212088718 instance=ExtResource("1_xv880")]
+transform = Transform3D(0.99997836, -0.006579624, 0, 0.006579624, 0.99997836, 0, 0, 0, 1, 0.0034732819, 1.212959, -0.29929018)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1107778105]
+transform = Transform3D(1, 0, 0, 0, 0.025177756, 0.999683, 0, -0.999683, 0.025177758, 0, 6.8392186, 0)
