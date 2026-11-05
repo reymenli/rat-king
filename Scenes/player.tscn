@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dw8dvf06wafq0" path="res://Scripts/player.gd" id="1_v0iea"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_3uw58"]
-height = 1.4960938
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_bo1nx"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
 
@@ -11,7 +10,7 @@ height = 1.4960938
 script = ExtResource("1_v0iea")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=346668085]
-mesh = SubResource("CylinderMesh_3uw58")
+mesh = SubResource("CapsuleMesh_bo1nx")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1136794481]
 shape = SubResource("CapsuleShape3D_3uw58")
@@ -19,9 +18,11 @@ shape = SubResource("CapsuleShape3D_3uw58")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1767620384]
 
 [node name="SpringArm3D" type="SpringArm3D" parent="." unique_id=542802880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8123177, 0.4394734)
 
 [node name="Camera3D" type="Camera3D" parent="SpringArm3D" unique_id=1817661306]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9645439, 0.9469768)
+transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 1.3919275, 2.2958226)
+fov = 115.6362
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1744479770]
 transform = Transform3D(-0.69182014, 0.72206986, 0, -0.72206986, -0.69182014, 0, 0, 0, 1, 0, 0, 0)

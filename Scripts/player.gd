@@ -66,3 +66,28 @@ func _update_aim() -> void:
 	else: 
 		aim_point = camera.global_position - camera.global_basis.z * aim_range
 		aim_collider = null
+		
+func _unhandled_input(event: InputEvent) -> void:
+	# Esc to unlock mouse and click to enter game again
+	if event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		return
+
+	if event.is_action_pressed("ui_cancel"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return
+
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		return
+
+	if event is InputEventMouseMotion:
+		# Mouse L/R moves whole character and up/down changes the camera arm
+		rotate_y(-event.relative.x * mouse_sensitivity)
+		spring_arm.rotation.x = clampf(
+			spring_arm.rotation.x - event.relative.y * mouse_sensitivity,
+			deg_to_rad(min_pitch_deg),
+			deg_to_rad(max_pitch_deg)
+		)
+
+	#if event.is_action_pressed("command_summon"):
+		#_issue_command()
