@@ -6,8 +6,14 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
 
-[node name="player" type="CharacterBody3D" unique_id=995763605]
+[node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim")]
 script = ExtResource("1_v0iea")
+camera_pivot = NodePath("CameraPivot")
+spring_arm = NodePath("CameraPivot/SpringArm3D")
+camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
+aim_ray = NodePath("AimRay")
+mesh = NodePath("MeshInstance3D")
+anim = NodePath("AnimationPlayer")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=346668085]
 mesh = SubResource("CapsuleMesh_bo1nx")
@@ -17,14 +23,16 @@ shape = SubResource("CapsuleShape3D_3uw58")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1767620384]
 
-[node name="SpringArm3D" type="SpringArm3D" parent="." unique_id=542802880]
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1672683795]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=542802880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8123177, 0.4394734)
 
-[node name="Camera3D" type="Camera3D" parent="SpringArm3D" unique_id=1817661306]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1817661306]
 transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 1.3919275, 2.2958226)
 fov = 115.6362
 
-[node name="RayCast3D" type="RayCast3D" parent="." unique_id=1744479770]
+[node name="AimRay" type="RayCast3D" parent="." unique_id=1744479770]
 transform = Transform3D(-0.69182014, 0.72206986, 0, -0.72206986, -0.69182014, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=384327185]
