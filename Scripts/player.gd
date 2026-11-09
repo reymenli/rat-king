@@ -83,11 +83,8 @@ func _update_aim() -> void:
 # Handles mouse input
 func _unhandled_input(event: InputEvent) -> void:
 	#Esc to unlock mouse and click to enter game again
-	if event.is_action_pressed("ui_text_toggle_insert_mode"):
-		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		return
 		
 	if event.is_action_pressed("ui_cancel"):
