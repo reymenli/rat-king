@@ -25,6 +25,10 @@ signal command_issued(point: Vector3, collider: Object)
 @export var mouse_sensitivity := 0.005
 @export_range(-90.0, 0.0, 0.1, "radians_as_degrees") var min_vertical_angle := deg_to_rad(-80.0)
 @export_range(0.0, 90.0, 0.1, "radians_as_degrees") var max_vertical_angle := PI / 4.0
+@export var min_zoom := 1.5
+@export var max_zoom := 8.0
+## Spring arm length change per scroll notch.
+@export var zoom_step := 0.5
 
 @export_group("Aiming")
 @export var aim_range := 100.0
@@ -101,6 +105,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		camera_pivot.rotation.y = wrapf(camera_pivot.rotation.y - event.relative.x * mouse_sensitivity, 0.0, TAU)
 		camera_pivot.rotation.x = clampf(camera_pivot.rotation.x - event.relative.y * mouse_sensitivity, min_vertical_angle, max_vertical_angle)
+	elif event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			spring_arm.spring_length = clampf(spring_arm.spring_length - zoom_step, min_zoom, max_zoom)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			spring_arm.spring_length = clampf(spring_arm.spring_length + zoom_step, min_zoom, max_zoom)
 	
 func _face_direction(direction: Vector3, delta: float) -> void:
 	if mesh == null or direction.is_zero_approx():
