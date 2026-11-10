@@ -3,22 +3,20 @@
 `rat-king-lab.blend` holds the lab and hideout kits, the props, the interactables and the squad rats.
 This folder has a `.gdignore`, so Godot never imports the `.blend` itself. Godot only sees the GLB exports in `assets/models/`.
 
-## Layout of the exports
+## Where the exports go
 
-| Folder | Contents |
+The exports are in `assets/models/`. See `assets/models/README.md` for the folder layout. One GLB per piece, named after the Blender object. The Blender collections map to folders like this:
+
+| Blender collection | Folder |
 |---|---|
-| `assets/models/lab/kit` | floors, walls, posts, ceilings, ducts |
-| `assets/models/lab/props` | pipes, electric floor, laser, glass, breakable wall, key |
-| `assets/models/lab/structure` | stairs, ramp, catwalks, ladder, railing |
-| `assets/models/lab/signs_wiring` | signs, cables, indicator lights |
-| `assets/models/lab/lights` | wall and ceiling lights |
-| `assets/models/lab/acid` | acid pool tiles, parkour pads, drip pipe |
-| `assets/models/lab/rat_tubes` | glass tubes the rats travel through |
-| `assets/models/hideout/*` | hideout kit, furniture and lights |
-| `assets/models/interactables` | gate, door, lever, button, plate, cage, spikes, lift, each with animations |
-| `assets/models/rats` | rigged squad rats E, F and G |
-
-One GLB per piece, named after the Blender object.
+| `Lab_Kit`, `Lab_Structure` | `environment/lab/architecture/` |
+| `Lab_Props` | `environment/lab/architecture/`, `hazards/` and `props/` |
+| `Lab_Acid` | `environment/lab/hazards/` |
+| `Lab_RatTubes` | `environment/lab/rat_tubes/` |
+| `Lab_Interactables` and `Lab_Slice` | `environment/lab/interactables/` |
+| `Lab_Wiring_Signs`, `Lab_Lights` | `environment/lab/signage/` and `lighting/` |
+| `Hideout_Kit`, `Hideout_Set`, `Hideout_Lights` | `environment/hideout/` |
+| `Rat` | `characters/rats/` |
 
 ## Conventions
 
