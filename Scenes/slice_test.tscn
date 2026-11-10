@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/characters/rats/SK_Rat_E.glb" id="1_rat"]
 [ext_resource type="PackedScene" path="res://assets/models/environment/lab/interactables/SM_Door_Sliding.glb" id="2_door"]
 [ext_resource type="PackedScene" path="res://assets/models/environment/lab/interactables/SM_Lever.glb" id="3_lever"]
-[ext_resource type="Script" path="res://scenes/slice_test.gd" id="4_script"]
+[ext_resource type="Script" path="res://Scenes/slice_test.gd" id="4_script"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
