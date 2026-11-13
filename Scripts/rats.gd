@@ -11,13 +11,12 @@ var speed = 3.0
 var turn_speed = 10.0
 
 enum State {
-	IDLE,
 	FOLLOW,
 	STAY,
 	MOVE_TO
 }
 
-var state: State = State.IDLE
+var state: State = State.STAY
 
 
 func _physics_process(delta: float) -> void:
@@ -30,12 +29,19 @@ func _physics_process(delta: float) -> void:
 	if state == State.FOLLOW:
 		_process_follow()
 		
+	if state == State.STAY:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		
 	move_and_slide()
 	_face_velocity(delta)
 
 func move_to(position: Vector3) -> void:
 	navigation_agent_3d.target_position = position
 	_set_state(State.MOVE_TO)
+	
+func stay() -> void:
+	_set_state(State.STAY)
 	
 func follow(target: Node3D) -> void:
 	_follow_player = target # We get the player node and store it as a variable. 
@@ -45,7 +51,7 @@ func _process_move_to() -> void:
 	if navigation_agent_3d.is_navigation_finished(): 
 		velocity.x = 0.0
 		velocity.z = 0.0
-		_set_state(State.IDLE)
+		_set_state(State.STAY)
 		return
 		
 	var next_path = navigation_agent_3d.get_next_path_position()
@@ -57,7 +63,7 @@ func _process_move_to() -> void:
 	
 func _process_follow() -> void:
 	if not is_instance_valid(_follow_player):
-		_set_state(State.IDLE)
+		_set_state(State.STAY)
 		return
 	
 	navigation_agent_3d.target_position = _follow_player.global_position
