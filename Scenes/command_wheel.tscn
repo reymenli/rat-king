@@ -1,0 +1,145 @@
+[gd_scene format=3 uid="uid://brvb28dkcxewj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1os3"]
+bg_color = Color(0, 0, 0, 0.16470589)
+corner_radius_top_left = 210
+corner_radius_top_right = 210
+corner_radius_bottom_right = 210
+corner_radius_bottom_left = 210
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r71vu"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_33egr"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="Command_Wheel" type="Control" unique_id=1619462906]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Slots" type="Control" parent="." unique_id=407867585]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="Slots" unique_id=1404458738]
+layout_mode = 0
+offset_left = -210.0
+offset_top = -210.0
+offset_right = 210.0
+offset_bottom = 210.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e1os3")
+
+[node name="Follow" type="Button" parent="Slots" unique_id=1130629482]
+layout_mode = 0
+offset_left = -30.0
+offset_top = -180.0
+offset_right = 30.0
+offset_bottom = -120.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Follow
+"
+
+[node name="Stay" type="Button" parent="Slots" unique_id=834920635]
+layout_mode = 0
+offset_left = 76.0
+offset_top = -136.0
+offset_right = 136.0
+offset_bottom = -76.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Stay
+"
+
+[node name="Bridge" type="Button" parent="Slots" unique_id=2121090975]
+layout_mode = 0
+offset_left = 120.0
+offset_top = -30.0
+offset_right = 180.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Bridge
+
+"
+
+[node name="Stack" type="Button" parent="Slots" unique_id=1259419610]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 76.0
+offset_right = 136.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Stack
+
+"
+
+[node name="Ratazord" type="Button" parent="Slots" unique_id=1933767011]
+layout_mode = 0
+offset_left = -40.0
+offset_top = 119.0
+offset_right = 40.0
+offset_bottom = 199.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_33egr")
+text = "Ratazord
+100
+
+"
+
+[node name="Fist" type="Button" parent="Slots" unique_id=2035608970]
+layout_mode = 0
+offset_left = -136.0
+offset_top = 76.0
+offset_right = -76.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Fist
+30
+
+"
+
+[node name="Vehicle" type="Button" parent="Slots" unique_id=929552255]
+layout_mode = 0
+offset_left = -180.0
+offset_top = -30.0
+offset_right = -120.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Vehicle
+20
+
+"
+
+[node name="Locked" type="Button" parent="Slots" unique_id=570203899]
+layout_mode = 0
+offset_left = -136.0
+offset_top = -136.0
+offset_right = -76.0
+offset_bottom = -76.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_r71vu")
+text = "Locked
+
+"
