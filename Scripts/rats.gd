@@ -3,10 +3,12 @@ extends CharacterBody3D
 signal state_changed(new_state: int)
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
+@onready var visuals: Node3D = $Visuals
 
 var _follow_player: Node3D
 
 var speed = 3.0
+var turn_speed = 10.0
 
 enum State {
 	IDLE,
@@ -29,6 +31,7 @@ func _physics_process(delta: float) -> void:
 		_process_follow()
 		
 	move_and_slide()
+	_face_velocity(delta)
 
 func move_to(position: Vector3) -> void:
 	navigation_agent_3d.target_position = position
@@ -70,6 +73,13 @@ func _process_follow() -> void:
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
 	
+func _face_velocity(delta: float) -> void:
+	var flat := Vector3(velocity.x, 0.0, velocity.z)
+	if flat.length() < 0.1: # Not moving a lot
+		return
+	var target_angle = atan2(flat.x, flat.z)
+	visuals.rotation.y = lerp_angle(visuals.rotation.y, target_angle, turn_speed * delta)
+
 func _set_state(new_state: State) -> void:
 	if state == new_state:
 		return
