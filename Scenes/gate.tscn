@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://csyo3ckfxk2eg"]
+
+[ext_resource type="PackedScene" uid="uid://dv0vfrv6ybnvf" path="res://assets/models/environment/lab/interactables/SM_Gate_Anim.glb" id="1_1lkl7"]
+[ext_resource type="Script" uid="uid://jplfgfqco5xr" path="res://Scripts/gate.gd" id="1_hn85u"]
+
+[node name="Gate" type="Node3D" unique_id=974519963 node_paths=PackedStringArray("animation_player")]
+script = ExtResource("1_hn85u")
+animation_player = NodePath("SM_Gate_Anim2/AnimationPlayer")
+
+[node name="SM_Gate_Anim2" parent="." unique_id=856668518 instance=ExtResource("1_1lkl7")]
+
+[editable path="SM_Gate_Anim2"]
