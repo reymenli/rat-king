@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://ch6tjuu8cgs5b"]
+
+[ext_resource type="PackedScene" uid="uid://tqkav5jkoje0" path="res://assets/models/environment/lab/interactables/SM_Button_Anim.glb" id="1_1cmwl"]
+
+[node name="Button" type="Node3D" unique_id=1674703405]
+
+[node name="SM_Button_Anim2" parent="." unique_id=317397462 instance=ExtResource("1_1cmwl")]

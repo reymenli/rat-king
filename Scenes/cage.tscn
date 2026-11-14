@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dnxp5nkga6tk7"]
+
+[ext_resource type="PackedScene" uid="uid://b418iat257kfb" path="res://assets/models/environment/lab/interactables/SM_Cage_Anim.glb" id="1_wmog5"]
+
+[node name="Cage" type="Node3D" unique_id=1817194571]
+
+[node name="SM_Cage_Anim2" parent="." unique_id=1338206998 instance=ExtResource("1_wmog5")]
+
+[editable path="SM_Cage_Anim2"]

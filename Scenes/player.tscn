@@ -29,8 +29,8 @@ shape = SubResource("CapsuleShape3D_3uw58")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8123177, 0.4394734)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1817661306]
-transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 1.3919275, 2.2958226)
-fov = 115.6362
+transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 2.3137217, 2.2958226)
+fov = 90.0
 
 [node name="AimRay" type="RayCast3D" parent="." unique_id=1744479770]
 transform = Transform3D(-0.69182014, 0.72206986, 0, -0.72206986, -0.69182014, 0, 0, 0, 1, 0, 0, 0)
