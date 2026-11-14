@@ -6,11 +6,13 @@ signal state_changed(new_state: int)
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var visuals: Node3D = $Visuals
 @onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
+@onready var animation_player: AnimationPlayer = $Visuals/SK_Rat_E/AnimationPlayer
 
 var _follow_player: Node3D
 
 var speed = 3.0
 var turn_speed = 10.0
+const FOLLOW_DISTANCE := 1.0
 
 enum State {
 	FOLLOW,
@@ -26,12 +28,18 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 		
 	if state == State.MOVE_TO:
+		animation_player.play("Run")
 		_process_move_to()
 	
-	if state == State.FOLLOW:
+	if state == State.FOLLOW and velocity.x != 0.0:
+		animation_player.play("Run")
 		_process_follow()
-		
+	elif state == State.FOLLOW and velocity.x == 0.0:
+		animation_player.play("Idle")
+		_process_follow()
+	
 	if state == State.STAY:
+		animation_player.play("Idle")
 		velocity.x = 0.0
 		velocity.z = 0.0
 		
@@ -70,6 +78,13 @@ func _process_follow() -> void:
 	
 	navigation_agent_3d.target_position = _follow_player.global_position
 	 
+	var to_target := _follow_player.global_position - global_position
+	to_target.y = 0.0
+	if to_target.length() < FOLLOW_DISTANCE: # So rats keep a distance away when following player
+		velocity.x = 0.0
+		velocity.z = 0.0
+		return
+	
 	if navigation_agent_3d.is_navigation_finished(): # Stay where you are, but you're still in follow mode
 		velocity.x = 0.0
 		velocity.z = 0.0

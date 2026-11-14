@@ -19,8 +19,28 @@ shape = SubResource("BoxShape3D_0bjeg")
 
 [node name="SK_Rat_E" parent="Visuals" unique_id=984339698 instance=ExtResource("2_ur0u6")]
 
+[node name="Skeleton3D" parent="Visuals/SK_Rat_E/RIG_Rat_E" parent_id_path=PackedInt32Array(984339698, 1930882999) index="0" unique_id=328167261]
+bones/0/rotation = Quaternion(0, 0.7071068, 0.7071068, 0)
+bones/2/rotation = Quaternion(-3.0908623e-08, 0.7071068, -0.7071068, 3.0908623e-08)
+bones/3/rotation = Quaternion(0.7071068, 3.090862e-08, -3.090862e-08, 0.7071068)
+bones/4/rotation = Quaternion(-3.0908623e-08, 0.7071068, -0.7071068, 3.0908623e-08)
+bones/5/rotation = Quaternion(0.7071068, 3.090862e-08, -3.090862e-08, 0.7071068)
+bones/6/rotation = Quaternion(2.7161131e-09, 0.9980676, 0.062137432, 4.3626915e-08)
+bones/7/rotation = Quaternion(0.100393996, 4.3490925e-08, -4.3883226e-09, 0.9949478)
+bones/8/rotation = Quaternion(-5.5394487e-08, -0.67944956, 0.7337222, 5.1297018e-08)
+bones/9/rotation = Quaternion(-5.5394487e-08, -0.67944956, 0.7337222, 5.1297018e-08)
+bones/10/rotation = Quaternion(0.7496782, 1.8576719e-08, -2.363126e-08, 0.6618026)
+bones/11/rotation = Quaternion(-3.0908623e-08, 0.7071068, -0.7071068, 3.0908623e-08)
+bones/12/rotation = Quaternion(0.7496782, 1.8576719e-08, -2.363126e-08, 0.6618026)
+bones/13/rotation = Quaternion(-3.0908623e-08, 0.7071068, -0.7071068, 3.0908623e-08)
+bones/15/rotation = Quaternion(-0.055300377, 0, 0, 0.99846977)
+bones/16/rotation = Quaternion(0.0028900942, 0, 0, 0.9999958)
+
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=184597615]
+target_desired_distance = 0.2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=311901387]
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=140234254]
+
+[editable path="Visuals/SK_Rat_E"]

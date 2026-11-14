@@ -9,5 +9,7 @@ script = ExtResource("1_ged03")
 [node name="Rats" parent="." unique_id=212088718 instance=ExtResource("1_j2gx0")]
 
 [node name="Rats2" parent="." unique_id=623909961 instance=ExtResource("1_j2gx0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.78904295)
 
 [node name="Rats3" parent="." unique_id=1157680795 instance=ExtResource("1_j2gx0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
