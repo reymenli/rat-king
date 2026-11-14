@@ -1,9 +1,5 @@
 [gd_scene format=3 uid="uid://crphw7tooxyfw"]
 
-[ext_resource type="Script" uid="uid://b4a6jw12ivi88" path="res://Scripts/navigation_region_3d.gd" id="1_3a6ej"]
-[ext_resource type="PackedScene" uid="uid://qpr767ijtdi1" path="res://Scenes/rats.tscn" id="1_xv880"]
-[ext_resource type="PackedScene" uid="uid://cnjun8fjc8gka" path="res://Scenes/player.tscn" id="3_0bjeg"]
-
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3a6ej"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -44,7 +40,6 @@ shadow_enabled = true
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=833015533]
 navigation_mesh = SubResource("NavigationMesh_e1os3")
-script = ExtResource("1_3a6ej")
 
 [node name="Floor" type="MeshInstance3D" parent="NavigationRegion3D" unique_id=463384361]
 mesh = SubResource("PlaneMesh_e1os3")
@@ -80,11 +75,3 @@ mesh = SubResource("BoxMesh_1gbwc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Wall2/StaticBody3D" unique_id=556565607]
 shape = SubResource("BoxShape3D_r71vu")
-
-[node name="Rats" parent="." unique_id=212088718 instance=ExtResource("1_xv880")]
-transform = Transform3D(0.99997836, -0.006579624, 0, 0.006579624, 0.99997836, 0, 0, 0, 1, 2.2762613, 5.5106497, -0.29929018)
-
-[node name="player" parent="." unique_id=995763605 instance=ExtResource("3_0bjeg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.334318, 0)
-
-[editable path="player"]

@@ -1,4 +1,7 @@
+class_name Command_Wheel
 extends Control
+
+signal ability_chosen(ability: Rat_Manager.COMMAND)
 
 @export_group("Command_Slots")
 @export var follow : Button 
@@ -8,6 +11,7 @@ extends Control
 @export var ratazord : Button 
 @export var fist : Button 
 @export var vehicle : Button 
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -20,22 +24,30 @@ func _process(delta: float) -> void:
 
 
 func _on_follow_pressed() -> void:
-	print("Pressed")
+	print("Pressed Follow")
+	ability_chosen.emit(Rat_Manager.COMMAND.FOLLOW)
 	pass # Replace with function body.
 
 
 func _on_stay_pressed() -> void:
-	print("Pressed")
+	print("Pressed Stay")
+	ability_chosen.emit(Rat_Manager.COMMAND.STAY)
 	pass # Replace with function body.
 
+func _on_direct_pressed() -> void:
+	print("Pressed direct / move_to")
+	ability_chosen.emit(Rat_Manager.COMMAND.MOVE_TO)
+	pass # Replace with function body.
 
 func _on_bridge_pressed() -> void:
-	print("Pressed")
+	print("Pressed bridge")
+	ability_chosen.emit(Rat_Manager.COMMAND.BRIDGE)
 	pass # Replace with function body.
 
 
 func _on_stack_pressed() -> void:
-	print("Pressed")
+	print("Pressed stack")
+	ability_chosen.emit(Rat_Manager.COMMAND.STACK)
 	pass # Replace with function body.
 
 
