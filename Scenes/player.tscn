@@ -8,6 +8,7 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
 
 [node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim", "command_wheel")]
+collision_layer = 2
 script = ExtResource("1_v0iea")
 camera_pivot = NodePath("CameraPivot")
 spring_arm = NodePath("CameraPivot/SpringArm3D")

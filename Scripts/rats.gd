@@ -1,9 +1,11 @@
+class_name Rat
 extends CharacterBody3D
 
 signal state_changed(new_state: int)
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var visuals: Node3D = $Visuals
+@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 
 var _follow_player: Node3D
 
@@ -85,6 +87,7 @@ func _face_velocity(delta: float) -> void:
 		return
 	var target_angle = atan2(flat.x, flat.z)
 	visuals.rotation.y = lerp_angle(visuals.rotation.y, target_angle, turn_speed * delta)
+	collision_shape_3d.rotation.y = lerp_angle(collision_shape_3d.rotation.y, target_angle, turn_speed * delta)
 
 func _set_state(new_state: State) -> void:
 	if state == new_state:

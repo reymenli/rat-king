@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://kfd3mcfajmud"]
+
+[ext_resource type="Script" uid="uid://cr5gbema1aqo" path="res://Scripts/rat_manager.gd" id="1_ged03"]
+[ext_resource type="PackedScene" uid="uid://qpr767ijtdi1" path="res://Scenes/rats.tscn" id="1_j2gx0"]
+
+[node name="Rat_Manager" type="Node" unique_id=1559785942]
+script = ExtResource("1_ged03")
+
+[node name="Rats" parent="." unique_id=212088718 instance=ExtResource("1_j2gx0")]
+
+[node name="Rats2" parent="." unique_id=623909961 instance=ExtResource("1_j2gx0")]
+
+[node name="Rats3" parent="." unique_id=1157680795 instance=ExtResource("1_j2gx0")]

@@ -7,15 +7,17 @@
 size = Vector3(0.23493958, 0.20831299, 0.66937256)
 
 [node name="Rats" type="CharacterBody3D" unique_id=212088718 groups=["rats"]]
+collision_layer = 4
+collision_mask = 5
 script = ExtResource("1_fbwu5")
-
-[node name="Visuals" type="Node3D" parent="." unique_id=156375015]
-
-[node name="SK_Rat_E" parent="Visuals" unique_id=984339698 instance=ExtResource("2_ur0u6")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1681016035]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0057907104, 0.0954895, -0.07992554)
 shape = SubResource("BoxShape3D_0bjeg")
+
+[node name="Visuals" type="Node3D" parent="." unique_id=156375015]
+
+[node name="SK_Rat_E" parent="Visuals" unique_id=984339698 instance=ExtResource("2_ur0u6")]
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=184597615]
 
