@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bnvju1w343a8u"]
+
+[ext_resource type="Script" uid="uid://cea8bdauvobyg" path="res://Scripts/pressure_plate.gd" id="1_85ng3"]
+[ext_resource type="PackedScene" uid="uid://c7731uhvu2jvn" path="res://assets/models/environment/lab/interactables/SM_PressurePlate_Anim.glb" id="1_u55f7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wfdvh"]
+size = Vector3(1, 0.18310547, 1)
+
+[node name="PressurePlate" type="Node3D" unique_id=1782478884 node_paths=PackedStringArray("pressed_sound", "unpressed_sound", "animation_player", "area")]
+script = ExtResource("1_85ng3")
+pressed_sound = NodePath("Pressed")
+unpressed_sound = NodePath("Unpressed")
+animation_player = NodePath("SM_PressurePlate_Anim2/AnimationPlayer")
+area = NodePath("PressedArea")
+
+[node name="SM_PressurePlate_Anim2" parent="." unique_id=1396073975 instance=ExtResource("1_u55f7")]
+
+[node name="Plate_Top" parent="SM_PressurePlate_Anim2/SM_PressurePlate_Anim" parent_id_path=PackedInt32Array(1396073975, 322496377) index="1" unique_id=907598585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.028, 0)
+
+[node name="PressedArea" type="Area3D" parent="." unique_id=1474510187]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PressedArea" unique_id=1601788992]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.091552734, 0)
+shape = SubResource("BoxShape3D_wfdvh")
+
+[node name="Pressed" type="AudioStreamPlayer3D" parent="." unique_id=1486714733]
+
+[node name="Unpressed" type="AudioStreamPlayer3D" parent="." unique_id=896900787]
+
+[editable path="SM_PressurePlate_Anim2"]

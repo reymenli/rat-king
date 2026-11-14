@@ -1,12 +1,13 @@
 [gd_scene format=3 uid="uid://cnjun8fjc8gka"]
 
 [ext_resource type="Script" uid="uid://dw8dvf06wafq0" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="PackedScene" uid="uid://brvb28dkcxewj" path="res://Scenes/command_wheel.tscn" id="2_cvnsp"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_bo1nx"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
 
-[node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim")]
+[node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim", "command_wheel")]
 script = ExtResource("1_v0iea")
 camera_pivot = NodePath("CameraPivot")
 spring_arm = NodePath("CameraPivot/SpringArm3D")
@@ -14,6 +15,7 @@ camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
 aim_ray = NodePath("AimRay")
 mesh = NodePath("MeshInstance3D")
 anim = NodePath("AnimationPlayer")
+command_wheel = NodePath("Command_Wheel")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=346668085]
 mesh = SubResource("CapsuleMesh_bo1nx")
@@ -29,10 +31,12 @@ shape = SubResource("CapsuleShape3D_3uw58")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8123177, 0.4394734)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1817661306]
-transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 1.3919275, 2.2958226)
-fov = 115.6362
+transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 2.3137217, 2.2958226)
+fov = 90.0
 
 [node name="AimRay" type="RayCast3D" parent="." unique_id=1744479770]
 transform = Transform3D(-0.69182014, 0.72206986, 0, -0.72206986, -0.69182014, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=384327185]
+
+[node name="Command_Wheel" parent="." unique_id=1619462906 instance=ExtResource("2_cvnsp")]

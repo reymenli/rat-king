@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dymy842i882st"]
+
+[ext_resource type="Script" uid="uid://d26xw36qftyvk" path="res://Scripts/lever.gd" id="1_6kuia"]
+[ext_resource type="PackedScene" uid="uid://bj73l7i6e18sd" path="res://assets/models/environment/lab/interactables/SM_Lever.glb" id="2_fhlr4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fqme0"]
+size = Vector3(0.24975586, 0.4299469, 0.37634277)
+
+[node name="Lever" type="Node3D" unique_id=175247300 node_paths=PackedStringArray("animation_player")]
+script = ExtResource("1_6kuia")
+animation_player = NodePath("SM_Lever2/AnimationPlayer")
+
+[node name="SM_Lever2" parent="." unique_id=332854742 instance=ExtResource("2_fhlr4")]
+
+[node name="Lever_Arm" parent="SM_Lever2/SM_Lever" parent_id_path=PackedInt32Array(332854742, 86024869) index="0" unique_id=1450542113]
+transform = Transform3D(1, 0, 0, 0, 0.13917275, -0.9902681, 0, 0.9902681, 0.13917275, 0, 0.15, 0.07)
+
+[node name="Area3D" type="Area3D" parent="." unique_id=115614923]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=677715843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00061035156, 0.22031403, 0.18841553)
+shape = SubResource("BoxShape3D_fqme0")
+
+[node name="Flipped" type="AudioStreamPlayer3D" parent="." unique_id=921563709]
+
+[editable path="SM_Lever2"]

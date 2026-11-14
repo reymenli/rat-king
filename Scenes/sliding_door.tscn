@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://ylocwwflus5x"]
+
+[ext_resource type="PackedScene" uid="uid://caglgredcegtx" path="res://assets/models/environment/lab/interactables/SM_Door_Sliding.glb" id="1_bqict"]
+[ext_resource type="Script" uid="uid://cigmidvfxlpjx" path="res://Scripts/sliding_door.gd" id="1_c0sr0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c0sr0"]
+size = Vector3(0.58000004, 2.18, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nm6k2"]
+size = Vector3(0.58000004, 2.18, 0.09)
+
+[node name="SlidingDoor" type="Node3D" unique_id=914559650 node_paths=PackedStringArray("animation_player")]
+script = ExtResource("1_c0sr0")
+animation_player = NodePath("SM_Door_Sliding2/AnimationPlayer")
+
+[node name="SM_Door_Sliding2" parent="." unique_id=92562155 instance=ExtResource("1_bqict")]
+
+[node name="Door_Leaf_L" parent="SM_Door_Sliding2/SM_Door_Sliding" parent_id_path=PackedInt32Array(92562155, 1158065059) index="1" unique_id=1939317263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.88, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SM_Door_Sliding2/SM_Door_Sliding/Door_Leaf_L" index="0" unique_id=1096691698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SM_Door_Sliding2/SM_Door_Sliding/Door_Leaf_L/StaticBody3D" unique_id=29675828]
+shape = SubResource("BoxShape3D_c0sr0")
+
+[node name="Door_Leaf_R" parent="SM_Door_Sliding2/SM_Door_Sliding" parent_id_path=PackedInt32Array(92562155, 1158065059) index="2" unique_id=1797507573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.88, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SM_Door_Sliding2/SM_Door_Sliding/Door_Leaf_R" index="0" unique_id=668169045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9802322e-08, 1.09, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SM_Door_Sliding2/SM_Door_Sliding/Door_Leaf_R/StaticBody3D" unique_id=638404514]
+shape = SubResource("BoxShape3D_nm6k2")
+
+[editable path="SM_Door_Sliding2"]
