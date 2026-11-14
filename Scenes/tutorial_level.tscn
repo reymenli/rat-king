@@ -1,3 +1,59 @@
 [gd_scene format=3 uid="uid://dtj6gwj4xcmil"]
 
+[ext_resource type="PackedScene" uid="uid://bnvju1w343a8u" path="res://Scenes/pressure_plate.tscn" id="1_b8nu6"]
+[ext_resource type="PackedScene" uid="uid://csyo3ckfxk2eg" path="res://Scenes/gate.tscn" id="1_k8hhx"]
+[ext_resource type="PackedScene" uid="uid://cnjun8fjc8gka" path="res://Scenes/player.tscn" id="2_7t4b2"]
+[ext_resource type="PackedScene" uid="uid://dymy842i882st" path="res://Scenes/lever.tscn" id="3_b8nu6"]
+[ext_resource type="PackedScene" uid="uid://ylocwwflus5x" path="res://Scenes/sliding_door.tscn" id="5_addnb"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kx4bj"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_jmr45"]
+sky_material = SubResource("ProceduralSkyMaterial_kx4bj")
+
+[sub_resource type="Environment" id="Environment_o8ev7"]
+background_mode = 2
+sky = SubResource("Sky_jmr45")
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fqme0"]
+size = Vector3(20, 0.5, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wfdvh"]
+size = Vector3(20, 0.5, 20)
+
 [node name="TutorialLevel" type="Node" unique_id=177064779]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1370817032]
+environment = SubResource("Environment_o8ev7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=770351967]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 30.701439, -52.625957)
+shadow_enabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1870488681]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=2027341678]
+shape = SubResource("BoxShape3D_fqme0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1609568187]
+mesh = SubResource("BoxMesh_wfdvh")
+
+[node name="PressurePlate" parent="StaticBody3D" unique_id=1782478884 instance=ExtResource("1_b8nu6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.62502, 0.25, -3.3238208)
+
+[node name="Gate" parent="." unique_id=974519963 node_paths=PackedStringArray("levers") instance=ExtResource("1_k8hhx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0018401146, 0.25, 5.707844)
+levers = [NodePath("../Lever")]
+
+[node name="player" parent="." unique_id=995763605 instance=ExtResource("2_7t4b2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8112397, 1.25, 0.023013115)
+
+[node name="Lever" parent="." unique_id=175247300 instance=ExtResource("3_b8nu6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5794067, 0.25, -3.435832)
+
+[node name="SlidingDoor" parent="." unique_id=914559650 node_paths=PackedStringArray("plate") instance=ExtResource("5_addnb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0627265, 0.25, 3.2422428)
+plate = NodePath("../StaticBody3D/PressurePlate")
