@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://brvb28dkcxewj"]
 
+[ext_resource type="Script" uid="uid://c5yyvybfhtvft" path="res://Scripts/command_wheel.gd" id="1_6wlrs"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1os3"]
 bg_color = Color(0, 0, 0, 0.16470589)
 corner_radius_top_left = 210
@@ -42,13 +44,19 @@ corner_radius_top_right = 40
 corner_radius_bottom_right = 40
 corner_radius_bottom_left = 40
 
-[node name="Command_Wheel" type="Control" unique_id=1619462906]
+[node name="Command_Wheel" type="Control" unique_id=1619462906 node_paths=PackedStringArray("follow", "stay", "bridge", "stack", "ratazord")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_6wlrs")
+follow = NodePath("Slots/Follow")
+stay = NodePath("Slots/Stay")
+bridge = NodePath("Slots/Bridge")
+stack = NodePath("Slots/Stack")
+ratazord = NodePath("Slots/Ratazord")
 
 [node name="Slots" type="Control" parent="." unique_id=407867585]
 layout_mode = 1
@@ -180,3 +188,11 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_uux2d")
 text = "Locked
 
 "
+
+[connection signal="pressed" from="Slots/Follow" to="." method="_on_follow_pressed"]
+[connection signal="pressed" from="Slots/Stay" to="." method="_on_stay_pressed"]
+[connection signal="pressed" from="Slots/Bridge" to="." method="_on_bridge_pressed"]
+[connection signal="pressed" from="Slots/Stack" to="." method="_on_stack_pressed"]
+[connection signal="pressed" from="Slots/Ratazord" to="." method="_on_ratazord_pressed"]
+[connection signal="pressed" from="Slots/Fist" to="." method="_on_fist_pressed"]
+[connection signal="pressed" from="Slots/Vehicle" to="." method="_on_vehicle_pressed"]

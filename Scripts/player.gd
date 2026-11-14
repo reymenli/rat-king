@@ -12,6 +12,7 @@ signal command_issued(point: Vector3, collider: Object)
 @export var mesh: Node3D
 @export var anim: AnimationPlayer
 @export var aim_marker: Node3D
+@export var command_wheel : Control
 # add later
 
 @export_group("Movement")
@@ -44,6 +45,7 @@ func _ready() -> void:
 	aim_ray.add_exception(self)
 	aim_ray.target_position = Vector3(0, 0, -aim_range)
 	aim_ray.enabled = true
+	command_wheel.hide()
 
 func _physics_process(delta: float) -> void:
 	# jumping and falling
@@ -63,10 +65,20 @@ func _physics_process(delta: float) -> void:
 	velocity.x = move_toward(velocity.x, target.x, acceleration * delta)
 	velocity.z = move_toward(velocity.z, target.z, acceleration * delta)
 	
+	
 	_face_direction(direction, delta)
 	move_and_slide()
 	_update_aim()
-
+	
+func _process(delta: float) -> void:
+	if Input.is_action_pressed("command_wheel"):
+		issue_command()
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	elif Input.is_action_just_released("command_wheel"):
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	else:
+		command_wheel.hide()
+		
 # Casts a ray along a line through the crosshair
 func _update_aim() -> void:
 	aim_ray.global_transform = Transform3D(camera.global_basis, spring_arm.global_position)
@@ -83,7 +95,6 @@ func _update_aim() -> void:
 		aim_marker.global_position = aim_point
 		aim_marker.visible = has_aim
 
-
 # Handles mouse input
 func _unhandled_input(event: InputEvent) -> void:
 	#Esc to unlock mouse and click to enter game again
@@ -98,9 +109,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		return
 		
-	if event.is_action_pressed("command_wheel"):
-		issue_command()
-		return
 		
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		camera_pivot.rotation.y = wrapf(camera_pivot.rotation.y - event.relative.x * mouse_sensitivity, 0.0, TAU)
@@ -119,7 +127,6 @@ func _face_direction(direction: Vector3, delta: float) -> void:
 
 func issue_command() -> void:
 	# Nothing under the crosshair (sky, out of range): don't send a point
-	if not has_aim:
-		return
-	command_issued.emit(aim_point, aim_collider)
-	print(aim_point, aim_collider)
+	command_wheel.show()
+	#if not has_aim:
+		#return
