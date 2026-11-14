@@ -3,10 +3,19 @@
 [ext_resource type="PackedScene" uid="uid://dv0vfrv6ybnvf" path="res://assets/models/environment/lab/interactables/SM_Gate_Anim.glb" id="1_1lkl7"]
 [ext_resource type="Script" uid="uid://jplfgfqco5xr" path="res://Scripts/gate.gd" id="1_hn85u"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hn85u"]
+size = Vector3(2.4, 2.4, 0.11)
+
 [node name="Gate" type="Node3D" unique_id=974519963 node_paths=PackedStringArray("animation_player")]
 script = ExtResource("1_hn85u")
 animation_player = NodePath("SM_Gate_Anim2/AnimationPlayer")
 
 [node name="SM_Gate_Anim2" parent="." unique_id=856668518 instance=ExtResource("1_1lkl7")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SM_Gate_Anim2/SM_Gate_Anim/Gate_Leaf" parent_id_path=PackedInt32Array(856668518, 1672355997) index="0" unique_id=2121847248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SM_Gate_Anim2/SM_Gate_Anim/Gate_Leaf/StaticBody3D" unique_id=1945107974]
+shape = SubResource("BoxShape3D_hn85u")
 
 [editable path="SM_Gate_Anim2"]

@@ -17,6 +17,7 @@ func _ready() -> void:
 		return
 	plate.pressed.connect(open)
 	plate.released.connect(close)
+	animation_player.play(close_animation)
 
 
 func open() -> void:
