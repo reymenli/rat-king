@@ -2,16 +2,17 @@
 
 [ext_resource type="PackedScene" uid="uid://kfd3mcfajmud" path="res://Scenes/rat_manager.tscn" id="1_q361b"]
 [ext_resource type="PackedScene" uid="uid://cnjun8fjc8gka" path="res://Scenes/player.tscn" id="2_1g1tw"]
-[ext_resource type="PackedScene" uid="uid://qpr767ijtdi1" path="res://Scenes/rats.tscn" id="2_ghtn7"]
 [ext_resource type="PackedScene" uid="uid://crphw7tooxyfw" path="res://Scenes/rat_test.tscn" id="3_ghtn7"]
 
 [node name="Level_Manager" type="Node" unique_id=1499788470]
 
 [node name="Rat_Manager" parent="." unique_id=1559785942 node_paths=PackedStringArray("player") instance=ExtResource("1_q361b")]
 player = NodePath("../player")
-rat_scene = ExtResource("2_ghtn7")
 
 [node name="player" parent="." unique_id=995763605 instance=ExtResource("2_1g1tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.043869, 2.4131656)
 
 [node name="rat_test" parent="." unique_id=93753335 instance=ExtResource("3_ghtn7")]
+
+[editable path="player"]
+[editable path="rat_test"]

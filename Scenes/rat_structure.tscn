@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dciqma21hx08t"]
+
+[ext_resource type="Script" uid="uid://carek77s381s" path="res://Scripts/rat_structure.gd" id="1_vf8s0"]
+
+[node name="rat_structure" type="StaticBody3D" unique_id=1812819816]
+script = ExtResource("1_vf8s0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2030296987]
+
+[node name="placeholder" type="MeshInstance3D" parent="." unique_id=330355617]

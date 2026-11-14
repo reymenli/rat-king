@@ -40,12 +40,14 @@ func _on_direct_pressed() -> void:
 	pass # Replace with function body.
 
 func _on_bridge_pressed() -> void:
-	print("Pressed")
+	print("Pressed bridge")
+	ability_chosen.emit(Rat_Manager.COMMAND.BRIDGE)
 	pass # Replace with function body.
 
 
 func _on_stack_pressed() -> void:
-	print("Pressed")
+	print("Pressed stack")
+	ability_chosen.emit(Rat_Manager.COMMAND.STACK)
 	pass # Replace with function body.
 
 
