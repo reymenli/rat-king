@@ -39,7 +39,7 @@ signal got_hurt
 @export_group("Aiming")
 @export var aim_range := 100.0
 ## Camera distance, field of view and mouse speed while right click is held.
-@export var aim_zoom := 1.3
+@export var aim_zoom := 2.0
 @export var aim_fov := 48.0
 @export var aim_sensitivity_scale := 0.6
 ## Interactables this close can be used without aiming at them.
@@ -237,6 +237,10 @@ func _animate(direction: Vector3, sprinting: bool) -> void:
 		_play("Idle")
 	else:
 		_play("Run" if sprinting else "Walk")
+
+# The pointing animation, played when a command is given.
+func gesture() -> void:
+	_play("Command")
 
 func _play(clip: StringName) -> void:
 	if anim and anim.has_animation(clip) and anim.current_animation != clip:

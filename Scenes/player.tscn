@@ -2,10 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dw8dvf06wafq0" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://brvb28dkcxewj" path="res://Scenes/command_wheel.tscn" id="2_cvnsp"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_bo1nx"]
-radius = 0.35
-height = 1.7
+[ext_resource type="PackedScene" path="res://assets/models/characters/rat_king/SK_RatKing.glb" id="3_rk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
 radius = 0.35
@@ -21,20 +18,20 @@ camera_pivot = NodePath("CameraPivot")
 spring_arm = NodePath("CameraPivot/SpringArm3D")
 camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
 aim_ray = NodePath("AimRay")
-mesh = NodePath("MeshInstance3D")
-anim = NodePath("AnimationPlayer")
+mesh = NodePath("Model")
+anim = NodePath("Model/SK_RatKing/AnimationPlayer")
 command_wheel = NodePath("Command_Wheel")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=346668085]
-mesh = SubResource("CapsuleMesh_bo1nx")
+[node name="Model" type="Node3D" parent="." unique_id=346668085]
+
+[node name="SK_RatKing" parent="Model" instance=ExtResource("3_rk")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.85, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1136794481]
 shape = SubResource("CapsuleShape3D_3uw58")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1767620384]
-
 [node name="CameraPivot" type="Node3D" parent="." unique_id=1672683795]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=542802880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)

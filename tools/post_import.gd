@@ -4,7 +4,7 @@ extends EditorScenePostImport
 # 1. Kit pieces are painted with vertex colours, so switch that on for every material.
 # 2. Looping clips (idle, run) are marked as looping.
 
-const LOOPING_CLIPS := ["Idle", "Run"]
+const LOOPING_CLIPS := ["Idle", "Walk", "Run"]
 
 func _post_import(scene: Node) -> Object:
 	_fix(scene)

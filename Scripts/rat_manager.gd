@@ -71,6 +71,7 @@ func command(ability: COMMAND, target: Rat = null) -> void:
 			rat.move_to(player.aim_point + spot)
 
 func _on_ability_chosen(ability: COMMAND) -> void:
+	player.gesture()
 	command(ability, player.aimed_rat())
 
 # Free rats placed in a level are in the "wild_rats" group until they join.

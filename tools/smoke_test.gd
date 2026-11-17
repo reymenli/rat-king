@@ -110,6 +110,8 @@ func _initialize() -> void:
 	rat_manager.command(Rat_Manager.COMMAND.MOVE_TO)
 	await wait(5.0)
 	var gate := things.get_node("Gate")
+	if not plate2.is_pressed():
+		for r in rat_manager.rats_out: print("  rat ", r.state, " ", r.global_position.snapped(Vector3.ONE * 0.1), " target ", plate2.global_position)
 	check(plate2.is_pressed() and not gate.is_open, "plate alone does not open the gate")
 	things.get_node("Lever2").interact(player)
 	check(gate.is_open, "plate and lever together open the gate")

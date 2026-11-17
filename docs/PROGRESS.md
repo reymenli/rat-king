@@ -71,6 +71,12 @@ Regenerating overwrites the scenes, so once a level is edited by hand, take its 
 
     <godot_console> --headless --path . --script tools/smoke_test.gd
 
+**Rat King model:** `blender/make_rat_king.py` builds the mesh, rig and clips (Idle, Walk, Run, Jump, Interact, Ow, Command) and exports `assets/models/characters/rat_king/SK_RatKing.glb`. Everything (shapes, colours, poses) is in tables at the top of the script. Rerun with:
+
+    "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b -P blender/make_rat_king.py
+
+The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle), on interact (Interact), on a hazard (Ow) and on a wheel command (Command). `tools/post_import.gd` loops Idle, Walk and Run.
+
 ## Known gaps and decisions
 
 - Bridge needs 6 rats and Stack 4 (the constants already in `rat_manager.gd`), the GDD says they are free. The tutorial gives exactly 6 rats.
@@ -80,8 +86,10 @@ Regenerating overwrites the scenes, so once a level is edited by hand, take its 
 - "Go To" (the teammate's MOVE_TO command) sits in the wheel's eighth slot instead of "???".
 - No sounds, no main menu, no settings, no win screen, no Vehicle / Fist / Ratazord yet.
 - HUD rat sticker and dialogue headshots are text only.
+- The smoke test gate check was flaky once (random rat spawn spots). It prints rat positions if it fails again.
 
 ## Status
 
+- 11/17/26: step 3 done. Rat King model and 7 clips in the game, aim camera tuned. Next: polish (sounds, menus, rat sticker) and zone content.
 - 11/17/26: plan steps 1 and 2 done and pushed. All five areas load, the scripted playthrough passes 34 of 34. Next: Rat King model and animations (step 3).
 - 11/17/26: audit finished, branch created, plan written. Code work starting.
