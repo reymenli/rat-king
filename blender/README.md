@@ -31,7 +31,7 @@ The exports are in `assets/models/`. See `assets/models/README.md` for the folde
 
 | Piece | Clips |
 |---|---|
-| Rats | `Idle` (loops), `Run` (loops), `Faint` |
+| Rats | `Idle` (loops), `Run` (loops), `Faint`, `Brace` (loops), `Form`, `HopOut`. The last three come from `make_rat_clips.py` |
 | Door | `Open`, `Close` |
 | Gate | `Open`, `Close` (rolls up into the header) |
 | Lever | `On`, `Off` |

@@ -67,7 +67,7 @@ Regenerating overwrites the scenes, so once a level is edited by hand, take its 
 | `right_zone.tscn` | timed button with spike slalom, key on a ledge, cage (6 rats), plate and lever door |
 | `final_zone.tscn` | blockout only: cheese behind glass, scientist lines |
 
-**Test:** `tools/smoke_test.gd` plays the tutorial and the zone pipes by script and prints PASS / FAIL (34 checks). Run it after gameplay changes:
+**Test:** `tools/smoke_test.gd` plays the tutorial and the zone pipes by script and prints PASS / FAIL (32 checks). Run it after gameplay changes:
 
     <godot_console> --headless --path . --script tools/smoke_test.gd
 
@@ -76,6 +76,12 @@ Regenerating overwrites the scenes, so once a level is edited by hand, take its 
     "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b -P blender/make_rat_king.py
 
 The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle), on interact (Interact), on a hazard (Ow) and on a wheel command (Command). `tools/post_import.gd` loops Idle, Walk and Run.
+
+**Rat structure clips:** `blender/make_rat_clips.py` adds Brace (loops), Form and HopOut to the three squad rats in `rat-king-lab.blend` (poses are tables at the top), saves the .blend and re-exports `SK_Rat_{E,F,G}.glb`. Rerun with:
+
+    "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b blender/rat-king-lab.blend -P blender/make_rat_clips.py
+
+`rat_structure.gd` mixes the three rat models, plays Form (staggered) then Brace when a Bridge or Stack is built, and `release()` plays HopOut before freeing the structure.
 
 ## Known gaps and decisions
 
@@ -90,6 +96,7 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 ## Status
 
+- 11/17/26: rat Brace, Form and HopOut clips added and used by Bridge and Stack. Smoke test 0 failures.
 - 11/17/26: main menu and settings added (week 4 schedule item). Next: sounds, win screen, rat sticker, then zone polish.
 - 11/17/26: step 3 done. Rat King model and 7 clips in the game, aim camera tuned. Next: polish (sounds, menus, rat sticker) and zone content.
 - 11/17/26: plan steps 1 and 2 done and pushed. All five areas load, the scripted playthrough passes 34 of 34. Next: Rat King model and animations (step 3).

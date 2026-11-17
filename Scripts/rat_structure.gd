@@ -9,7 +9,12 @@ enum Structure {
 const RAT_HEIGHT := 0.25
 const RAT_LENGTH := 0.7
 const WIDTH := 1.2
-const RAT_MODEL := preload("res://assets/models/characters/rats/SK_Rat_E.glb")
+const RAT_MODELS: Array[PackedScene] = [
+	preload("res://assets/models/characters/rats/SK_Rat_E.glb"),
+	preload("res://assets/models/characters/rats/SK_Rat_F.glb"),
+	preload("res://assets/models/characters/rats/SK_Rat_G.glb"),
+]
+const FORM_STAGGER := 0.04  # seconds between rats hopping in, so they don't move in lockstep
 const RATS_ACROSS := 4  # rats side by side, so the structure looks as wide as it is
 
 @onready var collision: CollisionShape3D = $CollisionShape3D
@@ -39,10 +44,36 @@ func build (struct: Structure, count: int, feet: Vector3, yaw: float) -> void:
 	for layer in layers:
 		for row in rows:
 			for i in RATS_ACROSS:
-				var rat := RAT_MODEL.instantiate() as Node3D
+				var rat := RAT_MODELS[(row + layer * 2 + i) % RAT_MODELS.size()].instantiate() as Node3D
 				add_child(rat)
 				rat.position = center + Vector3(
 					(i - (RATS_ACROSS - 1) / 2.0) * WIDTH / RATS_ACROSS,
 					(layer - layers / 2.0) * RAT_HEIGHT,
 					(row - (rows - 1) / 2.0) * RAT_LENGTH)
 				rat.rotation.y = PI * ((row + layer + i) % 2)  # alternate so it reads as a pile
+				_hop_in(rat, (layer * rows * RATS_ACROSS + row * RATS_ACROSS + i) * FORM_STAGGER)
+
+
+# Each rat holds its first frame, hops into place (Form) and then holds the weight (Brace, loops).
+func _hop_in(rat: Node3D, delay: float) -> void:
+	var anim := rat.get_node("AnimationPlayer") as AnimationPlayer
+	anim.play("Form")
+	anim.pause()
+	anim.queue("Brace")
+	await get_tree().create_timer(delay).timeout
+	if is_instance_valid(anim):
+		anim.play()
+
+
+# Rats hop off (HopOut), then the structure goes away. Collision goes first so nobody stands on air.
+func release() -> void:
+	collision.set_deferred("disabled", true)
+	var longest := 0.0
+	for rat in get_children():
+		var anim := rat.get_node_or_null("AnimationPlayer") as AnimationPlayer
+		if anim:
+			anim.clear_queue()
+			anim.play("HopOut")
+			longest = maxf(longest, anim.current_animation_length)
+	await get_tree().create_timer(longest).timeout
+	queue_free()

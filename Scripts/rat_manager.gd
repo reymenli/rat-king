@@ -128,7 +128,7 @@ func _build(structure: Rat_Structure.Structure, count: int) -> void:
 
 func _release_structures() -> void:
 	for s in structures:
-		s.queue_free()
+		s.release()
 	structures.clear()
 	rat_available = rat_total
 	_refill()

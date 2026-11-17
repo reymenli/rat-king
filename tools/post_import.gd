@@ -2,9 +2,9 @@
 extends EditorScenePostImport
 # Runs on every Blender-exported GLB that points at it in its .import file.
 # 1. Kit pieces are painted with vertex colours, so switch that on for every material.
-# 2. Looping clips (idle, run) are marked as looping.
+# 2. Looping clips (Idle, Walk, Run, Brace) are marked as looping.
 
-const LOOPING_CLIPS := ["Idle", "Walk", "Run"]
+const LOOPING_CLIPS := ["Idle", "Walk", "Run", "Brace"]
 
 func _post_import(scene: Node) -> Object:
 	_fix(scene)
