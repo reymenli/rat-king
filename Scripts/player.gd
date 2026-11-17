@@ -140,9 +140,13 @@ func _update_aim() -> void:
 		aim_marker.global_position = aim_point
 		aim_marker.visible = has_aim
 
+# The rat under the crosshair, if any.
+func aimed_rat() -> Rat:
+	return aim_collider as Rat if is_instance_valid(aim_collider) else null
+
 # The interactable under the crosshair, or failing that the closest one in reach.
 func _update_hover() -> void:
-	var target := _interactable_of(aim_collider as Node)
+	var target := _interactable_of(aim_collider as Node) if is_instance_valid(aim_collider) else null
 	if target and global_position.distance_to(aim_point) > target.interact_distance:
 		target = null
 	if target == null:

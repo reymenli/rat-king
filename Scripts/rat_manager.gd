@@ -59,16 +59,19 @@ func command(ability: COMMAND, target: Rat = null) -> void:
 	var selected: Array[Rat] = rats_out
 	if target and target in rats_out:
 		selected = [target]
-	for rat in selected:
+	for i in selected.size():
+		var rat := selected[i]
 		if ability == COMMAND.FOLLOW:
 			rat.follow(player)
 		if ability == COMMAND.STAY:
 			rat.stay()
 		if ability == COMMAND.MOVE_TO:
-			rat.move_to(player.aim_point)
+			# Each rat gets its own spot in a small ring so they do not fight over one point.
+			var spot := Vector3.ZERO if selected.size() == 1 else Vector3.RIGHT.rotated(Vector3.UP, i * TAU / selected.size()) * 0.3
+			rat.move_to(player.aim_point + spot)
 
 func _on_ability_chosen(ability: COMMAND) -> void:
-	command(ability, player.aim_collider as Rat)
+	command(ability, player.aimed_rat())
 
 # Free rats placed in a level are in the "wild_rats" group until they join.
 func _recruit_nearby(target: Rat) -> void:

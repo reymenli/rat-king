@@ -71,7 +71,7 @@ func _next_line() -> void:
 
 
 func _process(delta: float) -> void:
-	var on_target: bool = _player.aim_collider is Rat or _player.hovered != null
+	var on_target: bool = _player.aimed_rat() != null or is_instance_valid(_player.hovered)
 	crosshair.color = Color(1.0, 0.82, 0.25) if on_target else Color.WHITE
 	if not dialogue.visible:
 		return
