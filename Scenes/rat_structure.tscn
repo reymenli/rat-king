@@ -6,5 +6,3 @@
 script = ExtResource("1_vf8s0")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2030296987]
-
-[node name="placeholder" type="MeshInstance3D" parent="." unique_id=330355617]

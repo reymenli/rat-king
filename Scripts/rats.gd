@@ -13,89 +13,109 @@ var _follow_player: Node3D
 var speed = 3.0
 var turn_speed = 10.0
 const FOLLOW_DISTANCE := 1.0
+const LOST_DISTANCE := 14.0  # a following rat this far away is put back next to the player
+const REJOIN_DELAY := 10.0  # seconds a fainted rat is gone for
 
 enum State {
 	FOLLOW,
 	STAY,
-	MOVE_TO
+	MOVE_TO,
+	FAINTED
 }
 
 var state: State = State.STAY
 
 
 func _physics_process(delta: float) -> void:
+	if state == State.FAINTED:
+		return
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-		
+
 	if state == State.MOVE_TO:
-		animation_player.play("Run")
 		_process_move_to()
-	
-	if state == State.FOLLOW and velocity.x != 0.0:
-		animation_player.play("Run")
+	elif state == State.FOLLOW:
 		_process_follow()
-	elif state == State.FOLLOW and velocity.x == 0.0:
-		animation_player.play("Idle")
-		_process_follow()
-	
-	if state == State.STAY:
-		animation_player.play("Idle")
+	else:
 		velocity.x = 0.0
 		velocity.z = 0.0
-		
+
+	var moving := Vector2(velocity.x, velocity.z).length() > 0.1
+	animation_player.play("Run" if moving else "Idle")
 	move_and_slide()
 	_face_velocity(delta)
 
 func move_to(position: Vector3) -> void:
+	if state == State.FAINTED:
+		return
 	navigation_agent_3d.target_position = position
 	_set_state(State.MOVE_TO)
-	
+
 func stay() -> void:
+	if state == State.FAINTED:
+		return
 	_set_state(State.STAY)
-	
+
 func follow(target: Node3D) -> void:
-	_follow_player = target # We get the player node and store it as a variable. 
+	_follow_player = target # We get the player node and store it as a variable.
+	if state == State.FAINTED:
+		return
 	_set_state(State.FOLLOW)
 
+# Called by hazards. The rat faints, poofs away, and comes back next to the player later.
+func faint() -> void:
+	if state == State.FAINTED:
+		return
+	_set_state(State.FAINTED)
+	velocity = Vector3.ZERO
+	animation_player.play("Faint")
+	await animation_player.animation_finished
+	hide()
+	collision_shape_3d.disabled = true  # also takes the rat off any pressure plate
+	await get_tree().create_timer(REJOIN_DELAY, false).timeout
+	if is_instance_valid(_follow_player):
+		global_position = _follow_player.global_position + Vector3(randf_range(-0.6, 0.6), 0.2, randf_range(-0.6, 0.6))
+	collision_shape_3d.disabled = false
+	show()
+	_set_state(State.FOLLOW if is_instance_valid(_follow_player) else State.STAY)
+
 func _process_move_to() -> void:
-	if navigation_agent_3d.is_navigation_finished(): 
+	if navigation_agent_3d.is_navigation_finished():
 		velocity.x = 0.0
 		velocity.z = 0.0
 		_set_state(State.STAY)
 		return
-		
-	var next_path = navigation_agent_3d.get_next_path_position()
-	var direction: Vector3 = next_path - global_position # Where we want to go Minus where we are right now in a 3d vector.
-	direction.y = 0.0
-	direction = direction.normalized()
-	velocity.x = direction.x * speed
-	velocity.z = direction.z * speed
-	
+
+	_steer_along_path()
+
 func _process_follow() -> void:
 	if not is_instance_valid(_follow_player):
 		_set_state(State.STAY)
 		return
-	
+
 	navigation_agent_3d.target_position = _follow_player.global_position
-	 
+
 	var to_target := _follow_player.global_position - global_position
+	if to_target.length() > LOST_DISTANCE:
+		global_position = _follow_player.global_position
+		return
 	to_target.y = 0.0
-	if to_target.length() < FOLLOW_DISTANCE: # So rats keep a distance away when following player
+	# So rats keep a distance away when following player
+	if to_target.length() < FOLLOW_DISTANCE or navigation_agent_3d.is_navigation_finished():
 		velocity.x = 0.0
 		velocity.z = 0.0
 		return
-	
-	if navigation_agent_3d.is_navigation_finished(): # Stay where you are, but you're still in follow mode
-		velocity.x = 0.0
-		velocity.z = 0.0
-		
+
+	_steer_along_path()
+
+func _steer_along_path() -> void:
 	var next_path = navigation_agent_3d.get_next_path_position()
 	var direction: Vector3 = next_path - global_position # Where we want to go Minus where we are right now in a 3d vector.
 	direction.y = 0.0
 	direction = direction.normalized()
 	velocity.x = direction.x * speed
 	velocity.z = direction.z * speed
-	
+
 func _face_velocity(delta: float) -> void:
 	var flat := Vector3(velocity.x, 0.0, velocity.z)
 	if flat.length() < 0.1: # Not moving a lot

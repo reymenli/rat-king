@@ -6,12 +6,13 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_wfdvh"]
 size = Vector3(1, 0.18310547, 1)
 
-[node name="PressurePlate" type="Node3D" unique_id=1782478884 node_paths=PackedStringArray("pressed_sound", "unpressed_sound", "animation_player", "area")]
+[node name="PressurePlate" type="Node3D" unique_id=1782478884 node_paths=PackedStringArray("pressed_sound", "unpressed_sound", "animation_player", "area", "label")]
 script = ExtResource("1_85ng3")
 pressed_sound = NodePath("Pressed")
 unpressed_sound = NodePath("Unpressed")
 animation_player = NodePath("SM_PressurePlate_Anim2/AnimationPlayer")
 area = NodePath("PressedArea")
+label = NodePath("Label3D")
 
 [node name="SM_PressurePlate_Anim2" parent="." unique_id=1396073975 instance=ExtResource("1_u55f7")]
 
@@ -19,10 +20,19 @@ area = NodePath("PressedArea")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.028, 0)
 
 [node name="PressedArea" type="Area3D" parent="." unique_id=1474510187]
+collision_layer = 0
+collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PressedArea" unique_id=1601788992]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.091552734, 0)
 shape = SubResource("BoxShape3D_wfdvh")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+billboard = 1
+text = "0/1"
+font_size = 96
+outline_size = 24
 
 [node name="Pressed" type="AudioStreamPlayer3D" parent="." unique_id=1486714733]
 

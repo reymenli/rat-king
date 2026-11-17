@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://dnxp5nkga6tk7"]
 
 [ext_resource type="PackedScene" uid="uid://b418iat257kfb" path="res://assets/models/environment/lab/interactables/SM_Cage_Anim.glb" id="1_wmog5"]
+[ext_resource type="Script" path="res://Scripts/cage.gd" id="2_cage"]
 
-[node name="Cage" type="Node3D" unique_id=1817194571]
+[node name="Cage" type="Node3D" unique_id=1817194571 node_paths=PackedStringArray("animation_player")]
+script = ExtResource("2_cage")
+animation_player = NodePath("SM_Cage_Anim2/AnimationPlayer")
 
 [node name="SM_Cage_Anim2" parent="." unique_id=1338206998 instance=ExtResource("1_wmog5")]
 

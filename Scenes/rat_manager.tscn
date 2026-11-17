@@ -8,38 +8,3 @@
 script = ExtResource("1_ged03")
 rat_scene = ExtResource("1_j2gx0")
 structure_scene = ExtResource("3_81m6e")
-
-[node name="Rats" parent="." unique_id=212088718 instance=ExtResource("1_j2gx0")]
-
-[node name="Rats2" parent="." unique_id=623909961 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.78904295)
-
-[node name="Rats3" parent="." unique_id=1157680795 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats4" parent="." unique_id=925237036 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2699154, 0, 0.6870542)
-
-[node name="Rats5" parent="." unique_id=1797093 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.475002)
-
-[node name="Rats6" parent="." unique_id=663956205 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats7" parent="." unique_id=1950474396 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats8" parent="." unique_id=630661791 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats9" parent="." unique_id=1804335941 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats10" parent="." unique_id=2032185864 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats11" parent="." unique_id=543831039 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)
-
-[node name="Rats12" parent="." unique_id=52008692 instance=ExtResource("1_j2gx0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6870542)

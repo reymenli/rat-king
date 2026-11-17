@@ -4,11 +4,18 @@
 [ext_resource type="PackedScene" uid="uid://brvb28dkcxewj" path="res://Scenes/command_wheel.tscn" id="2_cvnsp"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_bo1nx"]
+radius = 0.35
+height = 1.7
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3uw58"]
+radius = 0.35
+height = 1.7
 
-[node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim", "command_wheel")]
-collision_layer = 3
+[sub_resource type="SphereShape3D" id="SphereShape3D_cam"]
+radius = 0.2
+
+[node name="player" type="CharacterBody3D" unique_id=995763605 node_paths=PackedStringArray("camera_pivot", "spring_arm", "camera", "aim_ray", "mesh", "anim", "command_wheel") groups=["player"]]
+collision_layer = 2
 script = ExtResource("1_v0iea")
 camera_pivot = NodePath("CameraPivot")
 spring_arm = NodePath("CameraPivot/SpringArm3D")
@@ -27,16 +34,18 @@ shape = SubResource("CapsuleShape3D_3uw58")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1767620384]
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=1672683795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=542802880]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8123177, 0.4394734)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+shape = SubResource("SphereShape3D_cam")
+spring_length = 3.2
+margin = 0.05
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1817661306]
-transform = Transform3D(1, 0, 0, 0, 0.92321473, 0.3842846, 0, -0.3842846, 0.92321473, 0, 2.3137217, 2.2958226)
-fov = 90.0
+fov = 70.0
 
 [node name="AimRay" type="RayCast3D" parent="." unique_id=1744479770]
-transform = Transform3D(-0.69182014, 0.72206986, 0, -0.72206986, -0.69182014, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=384327185]
 

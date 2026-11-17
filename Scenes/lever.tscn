@@ -6,9 +6,10 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_fqme0"]
 size = Vector3(0.24975586, 0.4299469, 0.37634277)
 
-[node name="Lever" type="Node3D" unique_id=175247300 node_paths=PackedStringArray("animation_player")]
+[node name="Lever" type="Node3D" unique_id=175247300 node_paths=PackedStringArray("animation_player", "lever_sound")]
 script = ExtResource("1_6kuia")
 animation_player = NodePath("SM_Lever2/AnimationPlayer")
+lever_sound = NodePath("Flipped")
 
 [node name="SM_Lever2" parent="." unique_id=332854742 instance=ExtResource("2_fhlr4")]
 

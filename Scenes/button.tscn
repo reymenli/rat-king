@@ -1,7 +1,29 @@
 [gd_scene format=3 uid="uid://ch6tjuu8cgs5b"]
 
 [ext_resource type="PackedScene" uid="uid://tqkav5jkoje0" path="res://assets/models/environment/lab/interactables/SM_Button_Anim.glb" id="1_1cmwl"]
+[ext_resource type="Script" path="res://Scripts/timed_button.gd" id="2_btn"]
 
-[node name="Button" type="Node3D" unique_id=1674703405]
+[sub_resource type="BoxShape3D" id="BoxShape3D_btn"]
+size = Vector3(0.5, 0.5, 0.3)
+
+[node name="Button" type="Node3D" unique_id=1674703405 node_paths=PackedStringArray("animation_player", "label")]
+script = ExtResource("2_btn")
+animation_player = NodePath("SM_Button_Anim2/AnimationPlayer")
+label = NodePath("Label3D")
 
 [node name="SM_Button_Anim2" parent="." unique_id=317397462 instance=ExtResource("1_1cmwl")]
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.15)
+shape = SubResource("BoxShape3D_btn")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0.05)
+billboard = 1
+font_size = 96
+outline_size = 24
+
+[editable path="SM_Button_Anim2"]

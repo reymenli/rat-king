@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/SM_Key.glb" id="1_key"]
+[ext_resource type="Script" path="res://Scripts/key.gd" id="2_key"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_key"]
+radius = 0.6
+
+[node name="Key" type="Area3D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_key")
+
+[node name="SM_Key" parent="." instance=ExtResource("1_key")]
+transform = Transform3D(2.5, 0, 0, 0, 0, -2.5, 0, 2.5, 0, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_key")
