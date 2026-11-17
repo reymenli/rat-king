@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/main_menu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.06, 0.1, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Rows" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 28
+
+[node name="Title" type="Label" parent="Center/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.25, 1)
+theme_override_font_sizes/font_size = 84
+text = "RAT KING"
+horizontal_alignment = 1
+
+[node name="Main" type="VBoxContainer" parent="Center/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Play" type="Button" parent="Center/Rows/Main"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Play"
+
+[node name="Settings" type="Button" parent="Center/Rows/Main"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Settings"
+
+[node name="Exit" type="Button" parent="Center/Rows/Main"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Exit"
+
+[node name="Settings" type="VBoxContainer" parent="Center/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VolumeLabel" type="Label" parent="Center/Rows/Settings"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Volume"
+
+[node name="Volume" type="HSlider" parent="Center/Rows/Settings"]
+custom_minimum_size = Vector2(520, 32)
+layout_mode = 2
+value = 100.0
+
+[node name="Controls" type="Label" parent="Center/Rows/Settings"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_font_sizes/font_size = 18
+
+[node name="Back" type="Button" parent="Center/Rows/Settings"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Back"

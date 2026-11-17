@@ -43,7 +43,7 @@ Branches: `origin/feature/plate-lever` and `origin/rat-development` are both alr
 
 ## What exists now (all on branch `Maximus`)
 
-**Run the game:** main scene is `Scenes/level_manager.tscn`. It holds the player, Rat_Manager and HUD, and loads areas from `Scenes/levels/` into itself (`Level_Manager.go_to`).
+**Run the game:** main scene is `Scenes/main_menu.tscn` (Play, Settings with volume and controls, Exit). Play loads `Scenes/level_manager.tscn`. It holds the player, Rat_Manager and HUD, and loads areas from `Scenes/levels/` into itself (`Level_Manager.go_to`).
 
 **Controls:** WASD move, Shift run, Space jump, mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc frees the mouse.
 
@@ -84,12 +84,13 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 - Hazards send the player back to the last safe ground (teleport) instead of a physics knockback.
 - Rats that cannot reach the player (closed door, ledge, pit) pop up next to the player after 1 second.
 - "Go To" (the teammate's MOVE_TO command) sits in the wheel's eighth slot instead of "???".
-- No sounds, no main menu, no settings, no win screen, no Vehicle / Fist / Ratazord yet.
+- No sounds, no win screen, no Vehicle / Fist / Ratazord yet.
 - HUD rat sticker and dialogue headshots are text only.
 - The smoke test gate check was flaky once (random rat spawn spots). It prints rat positions if it fails again.
 
 ## Status
 
+- 11/17/26: main menu and settings added (week 4 schedule item). Next: sounds, win screen, rat sticker, then zone polish.
 - 11/17/26: step 3 done. Rat King model and 7 clips in the game, aim camera tuned. Next: polish (sounds, menus, rat sticker) and zone content.
 - 11/17/26: plan steps 1 and 2 done and pushed. All five areas load, the scripted playthrough passes 34 of 34. Next: Rat King model and animations (step 3).
 - 11/17/26: audit finished, branch created, plan written. Code work starting.
