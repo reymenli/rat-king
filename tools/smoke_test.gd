@@ -123,6 +123,18 @@ func _initialize() -> void:
 	await wait(1.0)
 	check(manager._level.name == "Hideout", "the final pipe is sealed")
 
+	# zones: each exit pipe marks its zone done, both together unseal the final pipe
+	for zone: Array in [["left_zone", Vector3(10.5, 1, -19), "left"], ["right_zone", Vector3(10.5, 1, -15), "right"]]:
+		manager.go_to("res://Scenes/levels/%s.tscn" % zone[0])
+		await wait(1.0)
+		check(player.is_on_floor(), "%s loads and the player stands in it" % zone[0])
+		move_player(zone[1])
+		await wait(1.0)
+		check(manager._level.name == "Hideout" and manager.zones_done.has(zone[2]), "%s exit pipe returns to the hideout and marks the zone done" % zone[0])
+	move_player(Vector3(7, 1, 1.5))
+	await wait(1.0)
+	check(manager._level.name == "FinalZone" and player.is_on_floor(), "the final pipe opens once both zones are done")
+
 	print("smoke test: %d failure(s)" % failures)
 	quit(failures)
 

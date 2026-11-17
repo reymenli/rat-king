@@ -8,7 +8,6 @@ extends Node
 @export_file("*.tscn") var start_level := "res://Scenes/levels/tutorial.tscn"
 
 var zones_done := {}  # zone name -> true, used to unseal the final pipe
-var has_cheese := false
 
 var _level: Node
 
@@ -31,7 +30,7 @@ func go_to(level_path: String, spawn := "PlayerSpawn") -> void:
 	if marker == null:
 		marker = _level.get_node("PlayerSpawn")
 	player.global_position = marker.global_position
-	player.camera_pivot.rotation = Vector3(0, marker.global_rotation.y, 0)
+	player.camera_pivot.rotation = Vector3(-0.15, marker.global_rotation.y, 0)  # looking slightly down
 	player.velocity = Vector3.ZERO
 	player.reset_safe_spot()
 	rat_manager.gather()

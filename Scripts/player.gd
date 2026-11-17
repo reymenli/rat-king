@@ -33,7 +33,7 @@ signal got_hurt
 ## Spring arm length change per scroll notch.
 @export var zoom_step := 0.5
 ## How far the camera sits to the right of the character (over the shoulder).
-@export var shoulder_offset := 0.5
+@export var shoulder_offset := 0.75
 @export var default_fov := 70.0
 
 @export_group("Aiming")

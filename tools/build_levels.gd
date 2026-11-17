@@ -37,6 +37,9 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(LEVELS)
 	build_tutorial()
 	build_hideout()
+	build_left_zone()
+	build_right_zone()
+	build_final_zone()
 	quit()
 
 
@@ -70,7 +73,7 @@ func build_tutorial() -> void:
 	portal(Vector2i(12, 12), Vector2i(12, 13), "open")
 	build_shell()
 
-	spawn("PlayerSpawn", at(0, 1), -90.0)
+	spawn("PlayerSpawn", at(1, 1), -90.0)
 
 	# R1
 	wild_rat(at(2, 0, 0.1) + Vector3(0.2, 0, 0))
@@ -97,9 +100,7 @@ func build_tutorial() -> void:
 
 	# R3
 	put("res://Scenes/key.tscn", at(8, 2, 0.8))
-	var cage: Cage = put("res://Scenes/cage.tscn", at(10, 0) + Vector3(0.2, 0, -0.2))
-	for offset: Vector2 in [Vector2(-0.3, -0.2), Vector2(-0.1, 0.15), Vector2(0.1, -0.2), Vector2(0.3, 0.15)]:
-		caged_rat(cage, offset)
+	cage_with_rats(at(10, 0) + Vector3(0.2, 0, -0.2), 0.0, 4)
 	say("Cage", at(7, 1), Vector3(1.5, 3, 5.5), "Scientist", [
 		"Subject K-1 is out of containment again. How... curious."])
 	say("Cage2", at(8, 1), Vector3(1.5, 3, 5.5), "Rat King", [
@@ -194,6 +195,145 @@ func build_hideout() -> void:
 		"Three more pipes lead back into the Lab. Teal goes left, orange goes right.",
 		"The big red one is sealed. It will not open until both zones are cleared."])
 	finish("hideout.tscn")
+
+
+func build_left_zone() -> void:
+	begin("LeftZone", false)
+	room(0, 0, 3, 3, 4.5)  # A: arrival
+	room(0, -4, 3, 4)  # B: two plates, one command per rat
+	room(0, -9, 3, 5)  # C: electrified pit, then a cage
+	reshape(0, -7, 3, 2, -1.0, 2.0)
+	room(0, -13, 3, 4, 6.0)  # D: lever up on a ledge
+	reshape(0, -13, 3, 2, 1.5, 6.0)
+	room(3, -11, 3, 3, 4.5)  # E: way out
+	for x in 3:
+		portal(Vector2i(x, 2), Vector2i(x, 3), "open")
+	for z in [-11, -10, -9]:
+		portal(Vector2i(5, z), Vector2i(6, z), "open")
+	portal(Vector2i(1, 0), Vector2i(1, -1), "doorway")
+	portal(Vector2i(1, -4), Vector2i(1, -5), "door")
+	portal(Vector2i(1, -9), Vector2i(1, -10), "doorway")
+	portal(Vector2i(2, -10), Vector2i(3, -10), "door")
+	build_shell()
+
+	tube("Left", Vector3(3, 0, 6), 180.0, "Teal", "hideout.tscn", "FromLeft", "PlayerSpawn")
+	say("Arrive", at(1, 1), Vector3(5, 3, 3), "Scientist", [
+		"Movement in the left wing. Bring up the cameras."])
+
+	# B
+	var plate_a: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(0, -3))
+	var plate_b: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(2, -3))
+	plate_a.rats_needed = 2
+	plate_b.rats_needed = 2
+	var door_b := door_at(Vector2i(1, -4), Vector2i(1, -5))
+	door_b.plates.append(plate_a)
+	door_b.plates.append(plate_b)
+	wild_rat(at(1, -2, 0.1))
+	wild_rat(at(2, -1, 0.1))
+	say("Plates", at(1, -1), Vector3(5, 3, 1.5), "Rat King", [
+		"Two plates, two rats each. Sending everyone to one plate will not do it.",
+		"If my crosshair is on one rat when I give a command, only that rat listens."])
+
+	# C
+	for x in 3:
+		for z in [-7, -6]:
+			hazard_floor(LAB + "hazards/SM_ElectricFloor_2x2.glb", at(x, z, -1.0))
+	mount(LAB + "signage/signs/SM_Sign_Electric.glb", Vector2i(0, -5), Vector2i(-1, 0), 1.5)
+	put("res://Scenes/key.tscn", at(2, -9, 0.8))
+	cage_with_rats(at(0, -9) + Vector3(-0.2, 0, -0.2), 0.0, 6)
+	say("Pit", at(1, -5), Vector3(5, 3, 1.5), "Rat King", [
+		"The floor down there is live. Bridge will get me over."])
+
+	# D
+	var lever: Lever = mount("res://Scenes/lever.tscn", Vector2i(1, -13), Vector2i(0, -1), 2.5)
+	door_at(Vector2i(2, -10), Vector2i(3, -10)).levers.append(lever)
+	say("Ledge", at(1, -10), Vector3(5, 3, 1.5), "Rat King", [
+		"The switch for this door is up on that ledge. Time for a Stack."])
+
+	# E
+	var exit_pipe := tube("Left", Vector3(12, 0, -19), -90.0, "Teal", "hideout.tscn", "FromLeft", "ExitSpawn")
+	exit_pipe.completes_zone = "left"
+	say("Done", at(3, -10), Vector3(1.5, 3, 5), "Rat King", [
+		"That is the left wing done. This pipe runs straight back to the hideout."])
+	finish("left_zone.tscn")
+
+
+func build_right_zone() -> void:
+	begin("RightZone", false)
+	room(0, 0, 3, 3, 4.5)  # A: arrival
+	room(0, -6, 3, 6)  # B: timed door at the end of a spike slalom
+	room(0, -10, 3, 4, 6.0)  # C: key on a ledge, cage, two-lock door
+	reshape(0, -10, 3, 1, 1.5, 6.0)
+	room(3, -9, 3, 3, 4.5)  # D: way out
+	for x in 3:
+		portal(Vector2i(x, 2), Vector2i(x, 3), "open")
+	for z in [-9, -8, -7]:
+		portal(Vector2i(5, z), Vector2i(6, z), "open")
+	portal(Vector2i(1, 0), Vector2i(1, -1), "doorway")
+	portal(Vector2i(1, -6), Vector2i(1, -7), "door")
+	portal(Vector2i(2, -8), Vector2i(3, -8), "door")
+	build_shell()
+
+	tube("Right", Vector3(3, 0, 6), 180.0, "Orange", "hideout.tscn", "FromRight", "PlayerSpawn")
+	say("Arrive", at(1, 1), Vector3(5, 3, 3), "Scientist", [
+		"Now the right wing. It learns quickly. Note that down."])
+
+	# B
+	for cell: Vector2i in [Vector2i(0, -2), Vector2i(1, -2), Vector2i(1, -4), Vector2i(2, -4)]:
+		put("res://Scenes/spikes.tscn", at(cell.x, cell.y, 0.02))
+	var button: TimedButton = mount("res://Scenes/button.tscn", Vector2i(0, -1), Vector2i(-1, 0), 1.2)
+	button.active_seconds = 8.0
+	door_at(Vector2i(1, -6), Vector2i(1, -7)).buttons.append(button)
+	mount(LAB + "signage/signs/SM_Sign_Spikes.glb", Vector2i(2, -1), Vector2i(1, 0), 1.5)
+	wild_rat(at(0, -5, 0.1))
+	wild_rat(at(2, -5, 0.1))
+	say("Slalom", at(1, -1), Vector3(5, 3, 1.5), "Rat King", [
+		"A timed button, and the door is past the spikes.",
+		"Rats run straight into spikes. They faint, then find me again a little later."])
+
+	# C
+	put("res://Scenes/key.tscn", at(0, -10, 2.3))
+	cage_with_rats(at(2, -7) + Vector3(0.2, 0, 0.2), 180.0, 6)
+	var plate: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(1, -8))
+	plate.rats_needed = 3
+	var lever: Lever = mount("res://Scenes/lever.tscn", Vector2i(0, -8), Vector2i(-1, 0), 1.0)
+	var door_c := door_at(Vector2i(2, -8), Vector2i(3, -8))
+	door_c.plates.append(plate)
+	door_c.levers.append(lever)
+	say("Key", at(1, -7), Vector3(5, 3, 1.5), "Rat King", [
+		"A cage down here and its key up on the ledge."])
+
+	# D
+	var exit_pipe := tube("Right", Vector3(12, 0, -15), -90.0, "Orange", "hideout.tscn", "FromRight", "ExitSpawn")
+	exit_pipe.completes_zone = "right"
+	say("Done", at(3, -8), Vector3(1.5, 3, 5), "Rat King", [
+		"Right wing done. Back to the hideout."])
+	finish("right_zone.tscn")
+
+
+func build_final_zone() -> void:
+	begin("FinalZone", false)
+	room(0, 0, 3, 3, 4.5)  # A: arrival
+	room(0, -5, 3, 5)  # B: observation corridor
+	room(0, -8, 3, 3)  # C: the cheese chamber, behind glass for now
+	for x in 3:
+		portal(Vector2i(x, 2), Vector2i(x, 3), "open")
+		portal(Vector2i(x, -5), Vector2i(x, -6), "open")
+		put(LAB + "architecture/glass/SM_Glass_Wall_2x3.glb", at(x, -5) + Vector3(0, 0, -1), 0.0, geo)
+	portal(Vector2i(1, 0), Vector2i(1, -1), "doorway")
+	build_shell()
+
+	tube("Final_Sealed", Vector3(3, 0, 6), 180.0, "Red", "hideout.tscn", "FromFinal", "PlayerSpawn")
+	put(HIDE + "furniture/SM_Hide_Cheese_Table.glb", at(1, -7), 0.0, geo)
+	put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
+	_light(at(1, -7, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
+	say("Glass", at(1, -3), Vector3(5, 3, 1.5), "Scientist", [
+		"Ah, K-1. You came all this way for the cheese.",
+		"You will need far more friends than that to get through this glass."])
+	say("Glass2", at(1, -4), Vector3(5, 3, 1.5), "Rat King", [
+		"Ninety-nine rats. Then nothing in this Lab will stop us.",
+		"Odd. I can almost remember how that cheese tastes."])
+	finish("final_zone.tscn")
 
 
 # ---------------------------------------------------------------- building blocks
@@ -388,6 +528,36 @@ func caged_rat(cage: Node3D, offset: Vector2) -> void:
 
 func sign_arrow(color: String, pos: Vector3, yaw: float) -> void:
 	put(LAB + "signage/signs/SM_Sign_Arrow_%s.glb" % color, pos, yaw)
+
+
+# Puts something on a wall of a cell, facing into the cell. `dir` points from the cell to the wall.
+func mount(path: String, cell: Vector2i, dir: Vector2i, y: float) -> Node3D:
+	var pos := at(cell.x, cell.y, y) + Vector3(dir.x, 0, dir.y) * (CELL / 2.0 - 0.13)
+	return put(path, pos, rad_to_deg(atan2(-dir.x, -dir.y)))
+
+
+# A floor tile model that faints rats and sends the player back, e.g. the electric floor.
+func hazard_floor(model: String, pos: Vector3) -> void:
+	var area := Area3D.new()
+	area.collision_layer = 0
+	area.collision_mask = 6
+	area.set_script(load("res://Scripts/hazard.gd"))
+	things.add_child(area, true)
+	area.owner = level
+	area.position = pos
+	var shape := CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	shape.shape.size = Vector3(1.9, 0.5, 1.9)
+	shape.position.y = 0.25
+	area.add_child(shape)
+	shape.owner = level
+	put(model, Vector3.ZERO, 0.0, area)
+
+
+func cage_with_rats(pos: Vector3, yaw: float, count: int) -> void:
+	var cage := put("res://Scenes/cage.tscn", pos, yaw)
+	for i in count:
+		caged_rat(cage, Vector2(-0.3 + 0.12 * i, -0.2 + 0.35 * (i % 2)))
 
 
 # An invisible box that only notices the player, running `script_path` when entered.
