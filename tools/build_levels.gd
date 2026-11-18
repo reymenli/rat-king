@@ -301,6 +301,7 @@ func build_final_zone() -> void:
 	tube("Final_Sealed", Vector3(3, 0, 6), 180.0, "Red", "hideout.tscn", "FromFinal", "PlayerSpawn")
 	put(HIDE + "furniture/SM_Hide_Cheese_Table.glb", at(1, -7), 0.0, geo)
 	put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
+	put("res://assets/models/characters/scientist/SK_Scientist.glb", at(0, -6) + Vector3(0.3, 0, 0.2), 20.0)  # gloating at the glass
 	_light(at(1, -7, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
 	say("Glass", at(1, -3), Vector3(5, 3, 1.5), "Scientist", [
 		"ahh, K-1. all this way for the cheese... again.",

@@ -107,6 +107,7 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 ## Status
 
+- 11/17/26: Rat King and Scientist rebuilt to the character direction. Both are one fused low-poly mesh made from ellipsoids and tapered limbs (voxel remesh, smooth, decimate, nearest-shape vertex colours): `blender/make_rat_king.py` (rigged, same bone names and 7 clips) and `blender/make_scientist.py` (static, stands behind the glass in the final zone). Portraits re-rendered from them by `blender/make_portraits.py`.
 - 11/17/26: dialogue cut to 13 short triggers with a royal Rat King and a clinical Scientist voice, control hints in [brackets]. Lines auto-advance (no Enter), play once per run (`Level_Manager.dialogue_seen`), and the box shows a headshot (`assets/ui/portraits/`, rendered by `blender/make_portraits.py`, Scientist is a placeholder bust). Pause menu Settings has "Skip to the cheese" (99 rats, both wings done, loads the final zone) for testing.
 - 11/17/26: Esc pause menu, rat tagging, build ghost, aim point, no sprint with 6 m pits, tube signs, camera fixes (shoulder pulled in near walls, pipe lids). Smoke test 0 failures over repeated runs.
 - 11/17/26: rat Brace, Form and HopOut clips added and used by Bridge and Stack. Smoke test 0 failures.
