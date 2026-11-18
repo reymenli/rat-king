@@ -5,7 +5,7 @@ extends Control
 
 const GAME := "res://Scenes/level_manager.tscn"
 const TITLE := "res://Scenes/main_menu.tscn"
-const CONTROLS := """WASD  move        Shift  run        Space  jump
+const CONTROLS := """WASD  move        Space  jump
 Mouse  look        Right click (hold)  aim        Scroll  zoom
 E  interact        V  first person        Enter  next line
 Hold Q  command wheel: move onto a slice and let go to pick it.

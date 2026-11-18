@@ -45,11 +45,11 @@ Branches: `origin/feature/plate-lever` and `origin/rat-development` are both alr
 
 **Run the game:** main scene is `Scenes/main_menu.tscn` (Play, Settings with volume and controls, Exit). Play loads `Scenes/level_manager.tscn`. It holds the player, Rat_Manager and HUD, and loads areas from `Scenes/levels/` into itself (`Level_Manager.go_to`).
 
-**Controls:** WASD move, Shift run, Space jump, mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc opens the pause menu (Resume, Settings with volume and controls, Main Menu, Quit). The pause menu is `main_menu.tscn` with `pause_menu = true`, under `PauseLayer` in `level_manager.tscn`.
+**Controls:** WASD move, Space jump (no sprint, so a jump clears about 4.6 m and the 6 m pits need Bridge), mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc opens the pause menu (Resume, Settings with volume and controls, Main Menu, Quit). The pause menu is `main_menu.tscn` with `pause_menu = true`, under `PauseLayer` in `level_manager.tscn`.
 
 **Command wheel** (`Scripts/command_wheel.gd`): drawn in code at the screen centre. Hold Q, move the mouse onto a slice, let go to pick. Letting go in the middle or right clicking cancels. The game is paused while it is open. Slices are greyed out when the bank is too small. Vehicle, Fist and Ratazord are shown but always grey (week 4 and 5 work).
 
-**Collision layers:** 1 world, 2 player, 3 rats. Trigger areas are on no layer and mask the player (2) and/or rats (4). Interactables are found by the aim ray through an Area3D or body on layer 1.
+**Collision layers:** 1 world, 2 player, 3 rats, 4 camera blockers (invisible lids over pipe mouths, only the camera spring arm hits them). Rats do not collide with each other (mask 1), so they cannot jam on plates. Trigger areas are on no layer and mask the player (2) and/or rats (4). Interactables are found by the aim ray through an Area3D or body on layer 1.
 
 **Scripts added:** `level_manager`, `hud`, `timed_button`, `cage`, `key`, `hazard`, `pipe`, `dialogue_trigger`. **Changed:** `player` (camera, aim, interact, hurt), `command_wheel`, `rat_manager` (targeting, recruiting, `gather`), `rats` (faint and rejoin, arrival, unstuck), `rat_structure` (rats fill the bridge and stack), `interactable` (shared highlight and prompt), `lever`, `pressure_plate` (label, mask fix), `gate` (buttons), `sliding_door` (now extends gate).
 
@@ -86,7 +86,11 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 ## Known gaps and decisions
 
 - Bridge needs 6 rats and Stack 4 (the constants already in `rat_manager.gd`), the GDD says they are free. The tutorial gives exactly 6 rats.
-- A pit that Bridge can span (4 m) is also jumpable, so pits sit under a 2 m low ceiling that stops the jump.
+- Sprint was removed (user call, the maps are small). A walking jump clears about 4.6 m, pits are 6 m (3 cells) wide and Bridge is 6.6 m (`RAT_LENGTH` 1.1 per rat), so Bridge is the only way over. The old low ceilings over pits are gone.
+- Commands go to: the rat under the crosshair, else the rats tagged with left click (yellow arrow, HUD shows the count), else every rat out. Tags clear after each command.
+- While the wheel hovers Bridge or Stack, a see-through box shows where it will be built (green ok, red not enough rats or in the air). Structures are built the way the camera looks.
+- Holding right click raises the Rat King's right arm toward the crosshair (`Scripts/point_modifier.gd`, a SkeletonModifier3D on top of the walk clips).
+- Hideout tubes have a name sign (`TUBE_NAMES` in the generator) and an invisible camera-only lid so the camera cannot slide into the dark pipe.
 - Hazards send the player back to the last safe ground (teleport) instead of a physics knockback.
 - Rats that cannot reach the player (closed door, ledge, pit) pop up next to the player after 1 second.
 - "Go To" (the teammate's MOVE_TO command) sits in the wheel's eighth slot instead of "???".
@@ -96,6 +100,7 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 ## Status
 
+- 11/17/26: Esc pause menu, rat tagging, build ghost, aim point, no sprint with 6 m pits, tube signs, camera fixes (shoulder pulled in near walls, pipe lids). Smoke test 0 failures over repeated runs.
 - 11/17/26: rat Brace, Form and HopOut clips added and used by Bridge and Stack. Smoke test 0 failures.
 - 11/17/26: main menu and settings added (week 4 schedule item). Next: sounds, win screen, rat sticker, then zone polish.
 - 11/17/26: step 3 done. Rat King model and 7 clips in the game, aim camera tuned. Next: polish (sounds, menus, rat sticker) and zone content.

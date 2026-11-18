@@ -95,7 +95,7 @@ func _initialize() -> void:
 	move_player(Vector3(24, 1, 12), false)
 	await wait(0.5)
 	check(absf(player.global_position.y - 0.85) < 0.15 and hurts[0] == 0, "player can stand on the bridge over the pit")
-	move_player(Vector3(24, 1, 15))
+	move_player(Vector3(23, 1, 17.5))  # past the 6 m pit (z 10 to 16)
 	await wait(0.5)
 	rat_manager.command(Rat_Manager.COMMAND.FOLLOW)
 	await wait(0.5)

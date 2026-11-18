@@ -57,9 +57,9 @@ func build_tutorial() -> void:
 	# R4: tall room with a ledge. Stack to reach the timed button on it.
 	room(11, 0, 4, 3, 6.0)
 	reshape(13, 0, 2, 3, 1.5, 6.0)
-	# R5: corridor with a spike pit under a low duct. Bridge is the only way over.
+	# R5: corridor with a 6 m spike pit, too wide to jump. Bridge is the only way over.
 	room(11, 3, 2, 7)
-	reshape(11, 5, 2, 2, -1.0, 2.0)
+	reshape(11, 5, 2, 3, -1.0, 3.0)
 	# R6: the way out, a sewage pipe.
 	room(11, 10, 2, 3, 4.5)
 
@@ -83,7 +83,7 @@ func build_tutorial() -> void:
 	sign_arrow("Green", Vector3(5.86, 2.4, 3), -90.0)
 	say("Start", at(0, 1), Vector3(3, 3, 3), "Rat King", [
 		"Ugh... my head. Another morning in the Lab.",
-		"WASD to walk, Shift to run, Space to jump. The mouse looks around.",
+		"WASD to walk, Space to jump. The mouse looks around.",
 		"Holding right click steadies my aim.",
 		"Those two look lost. If I stand close, hold Q and pick Follow, they will join me.",
 		"Then that lever by the door. E pulls it."])
@@ -115,15 +115,15 @@ func build_tutorial() -> void:
 	say("Stack", at(11, 1), Vector3(1.5, 3, 5.5), "Rat King", [
 		"That button is up on the ledge, too high for a jump.",
 		"Stack: four rats pile up under my feet. From the top of the pile I can jump the rest.",
-		"The button runs on a timer and the door is back down here. I will have to run."])
+		"The button runs on a timer and the door is back down here. I will have to hurry."])
 
 	# R5
 	for x in [11, 12]:
-		for z in [5, 6]:
+		for z in [5, 6, 7]:
 			put("res://Scenes/spikes.tscn", at(x, z, -1.0))
 	put(LAB + "signage/signs/SM_Sign_Spikes.glb", Vector3(22.13, 1.5, 9), 90.0)
 	say("Bridge", at(11, 3) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Rat King", [
-		"Spikes. And that duct is too low to jump under.",
+		"Spikes, and the gap is too wide to jump.",
 		"Bridge: six rats link up straight ahead of me. I face the gap, hold Q and pick Bridge.",
 		"Once I am across, Follow brings everyone back."])
 	var plate2: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(12, 8))
@@ -132,7 +132,7 @@ func build_tutorial() -> void:
 	var gate := put("res://Scenes/gate.tscn", Vector3(24, 0, 20))
 	gate.plates.append(plate2)
 	gate.levers.append(lever2)
-	say("Gate", at(11, 7) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Rat King", [
+	say("Gate", at(11, 8) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Rat King", [
 		"A gate with two locks. A plate for three rats and a lever for me."])
 
 	# R6
@@ -201,8 +201,8 @@ func build_left_zone() -> void:
 	begin("LeftZone", false)
 	room(0, 0, 3, 3, 4.5)  # A: arrival
 	room(0, -4, 3, 4)  # B: two plates, one command per rat
-	room(0, -9, 3, 5)  # C: electrified pit, then a cage
-	reshape(0, -7, 3, 2, -1.0, 2.0)
+	room(0, -9, 3, 5)  # C: 6 m electrified pit, then a cage
+	reshape(0, -8, 3, 3, -1.0, 3.0)
 	room(0, -13, 3, 4, 6.0)  # D: lever up on a ledge
 	reshape(0, -13, 3, 2, 1.5, 6.0)
 	room(3, -11, 3, 3, 4.5)  # E: way out
@@ -236,7 +236,7 @@ func build_left_zone() -> void:
 
 	# C
 	for x in 3:
-		for z in [-7, -6]:
+		for z in [-8, -7, -6]:
 			hazard_floor(LAB + "hazards/SM_ElectricFloor_2x2.glb", at(x, z, -1.0))
 	mount(LAB + "signage/signs/SM_Sign_Electric.glb", Vector2i(0, -5), Vector2i(-1, 0), 1.5)
 	put("res://Scenes/key.tscn", at(2, -9, 0.8))
@@ -491,12 +491,43 @@ func _light(pos: Vector3, color: Color, energy: float, light_range: float) -> vo
 # A sewage tube set into a wall, with a pipe trigger at its mouth, a sign above it and a
 # spawn point in front of it. `wall_mid` is the floor point in the middle of the 6 m opening,
 # `yaw` turns the mouth to face into the room.
+const TUBE_NAMES := {
+	"tutorial.tscn": "TUTORIAL",
+	"hideout.tscn": "HIDEOUT",
+	"left_zone.tscn": "LEFT WING",
+	"right_zone.tscn": "RIGHT WING",
+	"final_zone.tscn": "THE CHEESE",
+}
+
+
 func tube(kind: String, wall_mid: Vector3, yaw: float, sign_color: String, target: String, target_spawn: String, own_spawn: String) -> Area3D:
 	var inward := Basis(Vector3.UP, deg_to_rad(yaw)).z
 	put(HIDE + "architecture/tubes/SM_Hide_TubeWall_6x4.glb", wall_mid, yaw, geo)
 	put(HIDE + "architecture/tubes/SM_Hide_Tube_%s.glb" % kind, wall_mid, yaw, geo)
 	put(HIDE + "signage/SM_Hide_Sign_Plank_%s.glb" % sign_color, wall_mid + inward * 0.34 + Vector3.UP * 3.75, yaw)
-	spawn(own_spawn, wall_mid + inward * 3.5, yaw + 180.0)
+	var label := Label3D.new()
+	_group(label, "SignTo" + target.get_basename().to_pascal_case())
+	label.text = TUBE_NAMES[target]
+	label.font_size = 64
+	label.outline_size = 16
+	label.pixel_size = 0.006
+	label.position = wall_mid + inward * 0.45 + Vector3.UP * 3.75
+	label.rotation_degrees.y = yaw
+	spawn(own_spawn, wall_mid + inward * 4.5, yaw + 180.0)
+	# Invisible lid over the pipe mouth on layer 4 (camera only), so the camera behind the player
+	# can't slide into the dark pipe. The player, rats and aim ray don't collide with layer 4.
+	var lid := StaticBody3D.new()
+	_group(lid, "CameraLid" + target.get_basename().to_pascal_case())
+	lid.collision_layer = 8
+	lid.collision_mask = 0
+	lid.position = wall_mid + inward * 1.35 + Vector3.UP * 1.6  # the pipe rim sticks out 1.26 m
+	lid.rotation_degrees.y = yaw
+	var lid_shape := CollisionShape3D.new()
+	var lid_box := BoxShape3D.new()
+	lid_box.size = Vector3(3.6, 3.6, 0.2)
+	lid_shape.shape = lid_box
+	lid.add_child(lid_shape)
+	lid_shape.owner = level
 	var area := _trigger("PipeTo" + target.get_basename().to_pascal_case(), "res://Scripts/pipe.gd",
 		wall_mid + inward * 1.5 + Vector3.UP * 1.2, Vector3(2.4, 2.4, 1.0))
 	area.rotation_degrees.y = yaw

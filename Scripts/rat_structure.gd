@@ -7,14 +7,15 @@ enum Structure {
 }
 
 const RAT_HEIGHT := 0.25
-const RAT_LENGTH := 0.7
+const RAT_LENGTH := 1.1  # bridge length per rat: 6 rats span a 6 m pit, a walking jump only clears about 4.6 m
+const MODEL_LENGTH := 0.6  # spacing of the rat models that fill the box
 const WIDTH := 1.2
 const RAT_MODELS: Array[PackedScene] = [
 	preload("res://assets/models/characters/rats/SK_Rat_E.glb"),
 	preload("res://assets/models/characters/rats/SK_Rat_F.glb"),
 	preload("res://assets/models/characters/rats/SK_Rat_G.glb"),
 ]
-const FORM_STAGGER := 0.04  # seconds between rats hopping in, so they don't move in lockstep
+const FORM_TIME := 0.6  # seconds from the first rat hopping in to the last, so they don't move in lockstep
 const RATS_ACROSS := 4  # rats side by side, so the structure looks as wide as it is
 
 @onready var collision: CollisionShape3D = $CollisionShape3D
@@ -46,8 +47,9 @@ func build (struct: Structure, count: int, feet: Vector3, yaw: float) -> void:
 	collision.position = center
 
 	# Fill the box with rats: rows of rats lying nose to tail, one layer per RAT_HEIGHT.
-	var rows := roundi(box_size.z / RAT_LENGTH)
+	var rows := maxi(roundi(box_size.z / MODEL_LENGTH), 1)
 	var layers := roundi(box_size.y / RAT_HEIGHT)
+	var stagger := FORM_TIME / (layers * rows * RATS_ACROSS)
 	for layer in layers:
 		for row in rows:
 			for i in RATS_ACROSS:
@@ -56,9 +58,9 @@ func build (struct: Structure, count: int, feet: Vector3, yaw: float) -> void:
 				rat.position = center + Vector3(
 					(i - (RATS_ACROSS - 1) / 2.0) * WIDTH / RATS_ACROSS,
 					(layer - layers / 2.0) * RAT_HEIGHT,
-					(row - (rows - 1) / 2.0) * RAT_LENGTH)
+					(row - (rows - 1) / 2.0) * box_size.z / rows)
 				rat.rotation.y = PI * ((row + layer + i) % 2)  # alternate so it reads as a pile
-				_hop_in(rat, (layer * rows * RATS_ACROSS + row * RATS_ACROSS + i) * FORM_STAGGER)
+				_hop_in(rat, (layer * rows * RATS_ACROSS + row * RATS_ACROSS + i) * stagger)
 
 
 # Each rat holds its first frame, hops into place (Form) and then holds the weight (Brace, loops).

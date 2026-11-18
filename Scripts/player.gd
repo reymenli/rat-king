@@ -19,7 +19,6 @@ signal got_hurt
 
 @export_group("Movement")
 @export var walk_speed := 5.0
-@export var sprint_speed := 8.0
 @export var jump_velocity := 4.5
 @export var acceleration := 30.0
 @export var turn_speed := 12.0
@@ -101,9 +100,7 @@ func _physics_process(delta: float) -> void:
 	var direction := Vector3(input_dir.x, 0.0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, camera.global_rotation.y)
 
-	var sprinting := Input.is_action_pressed("sprint") and not aiming
-	var speed := sprint_speed if sprinting else walk_speed
-	var target := direction * speed
+	var target := direction * walk_speed
 
 	velocity.x = move_toward(velocity.x, target.x, acceleration * delta)
 	velocity.z = move_toward(velocity.z, target.z, acceleration * delta)
@@ -116,14 +113,17 @@ func _physics_process(delta: float) -> void:
 	_update_aim()
 	_update_hover()
 	_update_safe_spot(delta)
-	_animate(direction, sprinting)
+	_animate(direction)
 
 func _update_camera(delta: float) -> void:
 	aiming = Input.is_action_pressed("rmb") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	var length := 0.0 if first_person else (aim_zoom if aiming else _zoom)
 	var blend := 1.0 - exp(-12.0 * delta)
 	spring_arm.spring_length = lerpf(spring_arm.spring_length, length, blend)
-	spring_arm.position.x = lerpf(spring_arm.position.x, 0.0 if first_person else shoulder_offset, blend)
+	# The arm starts at the shoulder, so pull the shoulder in when a wall is beside the player,
+	# or the camera begins behind the wall and shows the outside of the map.
+	var shoulder := 0.0 if first_person else _shoulder_room(shoulder_offset)
+	spring_arm.position.x = minf(lerpf(spring_arm.position.x, shoulder, blend), shoulder)
 	camera.fov = lerpf(camera.fov, aim_fov if aiming else default_fov, blend)
 	if mesh:
 		mesh.visible = not first_person
@@ -131,6 +131,14 @@ func _update_camera(delta: float) -> void:
 		_point.influence = move_toward(_point.influence, 1.0 if aiming else 0.0, delta * 6.0)
 		_point.active = _point.influence > 0.0
 		_point.target = aim_point
+
+# How far right of the pivot the shoulder can go before it hits a wall (keeps 0.25 m clear).
+func _shoulder_room(wanted: float) -> float:
+	var from := camera_pivot.global_position
+	var to := camera_pivot.global_transform * Vector3(wanted + 0.25, 0, 0)
+	var query := PhysicsRayQueryParameters3D.create(from, to, spring_arm.collision_mask)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	return wanted if hit.is_empty() else maxf(from.distance_to(hit.position) - 0.25, 0.0)
 
 # Casts a ray along a line through the crosshair
 func _update_aim() -> void:
@@ -236,7 +244,7 @@ func _face_direction(direction: Vector3, delta: float) -> void:
 	var target_yaw := atan2(-direction.x, -direction.z)
 	mesh.rotation.y = lerp_angle(mesh.rotation.y, target_yaw, turn_speed * delta)
 
-func _animate(direction: Vector3, sprinting: bool) -> void:
+func _animate(direction: Vector3) -> void:
 	if anim == null or anim.current_animation in ["Ow", "Interact", "Command"]:
 		return # one-shot clips finish on their own
 	if not is_on_floor():
@@ -244,7 +252,7 @@ func _animate(direction: Vector3, sprinting: bool) -> void:
 	elif direction.is_zero_approx():
 		_play("Idle")
 	else:
-		_play("Run" if sprinting else "Walk")
+		_play("Walk")
 
 # The pointing animation, played when a command is given.
 func gesture() -> void:
