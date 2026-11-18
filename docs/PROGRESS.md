@@ -45,7 +45,7 @@ Branches: `origin/feature/plate-lever` and `origin/rat-development` are both alr
 
 **Run the game:** main scene is `Scenes/main_menu.tscn` (Play, Settings with volume and controls, Exit). Play loads `Scenes/level_manager.tscn`. It holds the player, Rat_Manager and HUD, and loads areas from `Scenes/levels/` into itself (`Level_Manager.go_to`).
 
-**Controls:** WASD move, Shift run, Space jump, mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc frees the mouse.
+**Controls:** WASD move, Shift run, Space jump, mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc opens the pause menu (Resume, Settings with volume and controls, Main Menu, Quit). The pause menu is `main_menu.tscn` with `pause_menu = true`, under `PauseLayer` in `level_manager.tscn`.
 
 **Command wheel** (`Scripts/command_wheel.gd`): drawn in code at the screen centre. Hold Q, move the mouse onto a slice, let go to pick. Letting go in the middle or right clicking cancels. The game is paused while it is open. Slices are greyed out when the bank is too small. Vehicle, Fist and Ratazord are shown but always grey (week 4 and 5 work).
 

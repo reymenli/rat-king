@@ -51,6 +51,13 @@ size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 28
 text = "Settings"
 
+[node name="MainMenu" type="Button" parent="Center/Rows/Main"]
+custom_minimum_size = Vector2(280, 56)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+text = "Main Menu"
+
 [node name="Exit" type="Button" parent="Center/Rows/Main"]
 custom_minimum_size = Vector2(280, 56)
 layout_mode = 2

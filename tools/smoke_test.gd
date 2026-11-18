@@ -26,6 +26,16 @@ func _initialize() -> void:
 	check(player.is_on_floor(), "player lands on the floor")
 	check(rat_manager.rat_total == 0, "player starts with no rats")
 
+	# Esc pause menu: opens and pauses, Esc in Settings goes back, Esc again resumes
+	var pause := manager.get_node("PauseLayer/PauseMenu") as Control
+	await press_esc()
+	check(pause.visible and paused, "Esc opens the pause menu and pauses")
+	pause._show_settings(true)
+	await press_esc()
+	check(pause.visible and not pause.settings.visible, "Esc in Settings goes back to the pause buttons")
+	await press_esc()
+	check(not pause.visible and not paused, "Esc again resumes the game")
+
 	# recruit the two free rats
 	move_player(Vector3(4.5, 1, 3))
 	await wait(0.3)
@@ -146,6 +156,15 @@ func move_player(pos: Vector3, mark_safe := true) -> void:
 	player.velocity = Vector3.ZERO
 	if mark_safe:
 		player.reset_safe_spot()
+
+
+func press_esc() -> void:
+	var e := InputEventAction.new()
+	e.action = "ui_cancel"
+	e.pressed = true
+	Input.parse_input_event(e)
+	await process_frame
+	await process_frame
 
 
 func wait(seconds: float) -> void:

@@ -195,13 +195,9 @@ func hurt() -> void:
 
 # Handles mouse input
 func _unhandled_input(event: InputEvent) -> void:
-	#Esc to unlock mouse and click to enter game again
+	# Click to grab the mouse again (after alt-tab). Esc is the pause menu (main_menu.gd).
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		return
-
-	if event.is_action_pressed("ui_cancel"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		return
 
 	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:

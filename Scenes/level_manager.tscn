@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cnjun8fjc8gka" path="res://Scenes/player.tscn" id="2_1g1tw"]
 [ext_resource type="Script" path="res://Scripts/level_manager.gd" id="3_lm"]
 [ext_resource type="PackedScene" path="res://Scenes/hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://Scenes/main_menu.tscn" id="5_menu"]
 
 [node name="Level_Manager" type="Node" unique_id=1499788470 node_paths=PackedStringArray("player", "rat_manager", "hud")]
 script = ExtResource("3_lm")
@@ -18,3 +19,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 player = NodePath("../player")
 
 [node name="HUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="PauseMenu" parent="PauseLayer" instance=ExtResource("5_menu")]
+pause_menu = true
