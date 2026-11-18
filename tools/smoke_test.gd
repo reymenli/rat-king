@@ -76,6 +76,14 @@ func _initialize() -> void:
 	rat_manager.command(Rat_Manager.COMMAND.STACK)
 	await wait(0.5)
 	check(player.global_position.y > before + 0.8, "Stack lifts the player about 1 m")
+	var top := player.global_position.y
+	rat_manager.rat_total += 4  # enough rats for a second stack, so only the "on top of rats" rule can stop it
+	rat_manager.rat_available += 4
+	rat_manager.command(Rat_Manager.COMMAND.STACK)
+	await wait(0.5)
+	check(rat_manager.structures.size() == 1 and player.global_position.y < top + 0.3, "no stacking on top of a stack")
+	rat_manager.rat_total -= 4
+	rat_manager.rat_available -= 4
 	move_player(Vector3(27.5, 3.2, 3))
 	await wait(0.5)
 	check(absf(player.global_position.y - 2.35) < 0.2, "the ledge holds the player")
@@ -164,6 +172,15 @@ func _initialize() -> void:
 	check(player.in_vehicle and player.global_position == before_hurt, "Vehicle carries the player and floor hazards don't hurt")
 	rat_manager.command(Rat_Manager.COMMAND.FOLLOW)
 	check(not player.in_vehicle, "Follow gets off the Vehicle")
+
+	# Giant Fist plays even with nothing to break
+	var children_before := rat_manager.get_child_count()
+	player.aim_collider = null
+	player.aim_point = player.global_position + Vector3(0, 1, -30)
+	rat_manager._fist()
+	await wait(0.1)
+	check(rat_manager.get_child_count() > children_before, "Giant Fist plays with no wall in front")
+	await wait(1.0)
 
 	# Giant Fist breaks the cracked wall into the hall
 	var cracked := get_nodes_in_group("breakable")

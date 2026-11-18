@@ -184,19 +184,22 @@ func _rat_ball(count: int, radius: float) -> Node3D:
 
 
 # Giant Fist: aim at a breakable wall, the rats ball up into a fist and smash it.
+# Giant Fist: the rats ball up into a fist and punch where the crosshair is (or as far as
+# the fist reaches). A breakable wall there breaks.
 func _fist() -> void:
 	var wall := _breakable_under_crosshair()
-	if wall == null:
-		_say("Rat King", "gotta aim the fist at somethin breakable.")
-		return
+	var forward: Vector3 = -player.camera.global_basis.z
 	var fist := _rat_ball(28, 0.55)
-	var start: Vector3 = player.global_position + Vector3.UP * 0.8 - player.camera.global_basis.z * 0.8
+	var start: Vector3 = player.global_position + Vector3.UP * 0.8 + forward * 0.8
 	fist.global_position = start
 	var hit: Vector3 = player.aim_point
+	if start.distance_to(hit) > FIST_RANGE:
+		hit = start + (hit - start).normalized() * FIST_RANGE
 	var tween := create_tween()
-	tween.tween_property(fist, "global_position", start - player.camera.global_basis.z * 0.4, 0.15)  # wind up
+	tween.tween_property(fist, "global_position", start - forward * 0.4, 0.15)  # wind up
 	tween.tween_property(fist, "global_position", hit, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_callback(wall.queue_free)
+	if wall:
+		tween.tween_callback(wall.queue_free)
 	tween.tween_property(fist, "scale", Vector3.ZERO, 0.3)
 	tween.tween_callback(fist.queue_free)
 
@@ -283,11 +286,26 @@ func gather() -> void:
 		rat.global_position = _beside_player()
 		_follow_in_line(rat)
 
-func _can_build(count: int) -> bool:
-	return player.is_on_floor() and count <= rat_available
+# Builds only from real ground (not from on top of rats, or Stack could be spammed through
+# the ceiling), and a Stack also needs headroom for itself plus the Rat King.
+func _can_build(structure: Rat_Structure.Structure, count: int) -> bool:
+	if not player.is_on_floor() or count > rat_available or _standing_on_rats():
+		return false
+	if structure == Rat_Structure.Structure.STACK:
+		var feet := _player_feet()
+		var room := count * Rat_Structure.RAT_HEIGHT + 1.8
+		var query := PhysicsRayQueryParameters3D.create(feet + Vector3.UP * 0.1, feet + Vector3.UP * room, 1)
+		return player.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+	return true
+
+func _standing_on_rats() -> bool:
+	for i in player.get_slide_collision_count():
+		if player.get_slide_collision(i).get_collider() is Rat_Structure:
+			return true
+	return false
 
 func _build(structure: Rat_Structure.Structure, count: int) -> void:
-	if not _can_build(count):
+	if not _can_build(structure, count):
 		return
 
 	for i in mini(count, rats_out.size()):
@@ -346,7 +364,7 @@ func _show_ghost(ability: int) -> void:
 	(_ghost.mesh as BoxMesh).size = box_size
 	var basis := Basis(Vector3.UP, _build_yaw())
 	_ghost.global_transform = Transform3D(basis, _structure_feet(structure) + basis * Rat_Structure.box_center_for(structure, box_size))
-	var ok := _can_build(count)
+	var ok := _can_build(structure, count)
 	(_ghost.material_override as StandardMaterial3D).albedo_color = Color(0.3, 1.0, 0.4, 0.35) if ok else Color(1.0, 0.25, 0.25, 0.35)
 	_ghost.show()
 

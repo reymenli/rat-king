@@ -22,6 +22,7 @@ import sys
 import bmesh
 import bpy
 from mathutils import Euler, Matrix, Vector
+from mathutils.bvhtree import BVHTree
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -216,11 +217,38 @@ def head_piece(name, build, rgba):
     objects.append(ob)
 
 
-# sunglasses: two dark lenses on the snout, a bridge, arms back to the ears
-for x in (0.085, -0.085):
-    head_piece("Lens", lambda bm, x=x: disc(bm, (x * 1.05, -0.385, 1.265), 0.072, 0.02), SHADES)
-    head_piece("Temple", lambda bm, x=x: stick(bm, (x * 1.75, -0.375, 1.275), (x * 2.0, -0.18, 1.3), 0.007), SHADES)
-head_piece("Bridge", lambda bm: box(bm, (0, -0.4, 1.275), (0.05, 0.015, 0.016)), SHADES)
+# sunglasses: found by casting rays at the head, so they sit just in front of the face
+# instead of sinking into it. Rounded lenses angled to the face, a top bar, arms back to the
+# ears, and a white glint on each lens so they read as glass, not as empty eyes.
+head_tree = BVHTree.FromObject(objects[0], bpy.context.evaluated_depsgraph_get())
+SHADES_Z = 1.275
+
+
+def face_point(x, z):
+    hit, normal, _, _ = head_tree.ray_cast(Vector((x, -1.0, z)), Vector((0, 1, 0)))
+    return hit, normal
+
+
+def lens(bm, centre, normal):
+    facing = normal.to_track_quat("Z", "Y").to_matrix().to_4x4()
+    shape = Matrix.Translation(centre) @ facing @ Matrix.Diagonal((1.3, 0.85, 1.0, 1.0))
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=14, radius1=0.05, radius2=0.05, depth=0.016, matrix=shape)
+
+
+rims = []
+for x in (0.08, -0.08):
+    hit, normal = face_point(x, SHADES_Z)
+    normal = (normal + Vector((0, -1, 0))).normalized()  # face mostly forward, a little to the side
+    centre = hit + normal * 0.03
+    rims.append(centre)
+    head_piece("Lens", lambda bm, c=centre, n=normal: lens(bm, c, n), SHADES)
+    glint = centre + normal * 0.01 + Vector((0.02 * (1 if x > 0 else -1), 0, 0.018))
+    head_piece("Glint", lambda bm, g=glint, n=normal: box(bm, g, (0.022, 0.004, 0.006), (0, 0, 0)), colour("ffffff"))
+    ear = Vector((0.17 * (1 if x > 0 else -1), -0.12, SHADES_Z + 0.03))
+    head_piece("Temple", lambda bm, a=centre + Vector((0.06 * (1 if x > 0 else -1), 0.01, 0.01)), b=ear: stick(bm, a, b, 0.008), SHADES)
+top = (rims[0] + rims[1]) / 2 + Vector((0, -0.005, 0.04))
+head_piece("TopBar", lambda bm: stick(bm, rims[1] + Vector((0, 0, 0.04)), rims[0] + Vector((0, 0, 0.04)), 0.011), SHADES)
+head_piece("Bridge", lambda bm: box(bm, (rims[0] + rims[1]) / 2 + Vector((0, -0.01, 0.01)), (0.05, 0.015, 0.016)), SHADES)
 # buck teeth
 for x in (0.013, -0.013):
     head_piece("Tooth", lambda bm, x=x: box(bm, (x, -0.575, 1.09), (0.022, 0.012, 0.05)), TOOTH)
@@ -232,6 +260,7 @@ for x in (1, -1):
 
 
 # gold crown: a band with five points and a red gem, sitting a little crooked
+CROWN_TILT = Matrix.Translation((0.01, -0.18, 1.355)) @ Euler((math.radians(-6), math.radians(8), math.radians(18))).to_matrix().to_4x4()
 def crown(bm):
     points = 10
     bottom, top = [], []
@@ -244,12 +273,12 @@ def crown(bm):
         j = (i + 1) % points
         bm.faces.new((bottom[i], bottom[j], top[j], top[i]))
     bmesh.ops.solidify(bm, geom=bm.faces[:], thickness=0.014)
-    tilt = Matrix.Translation((0.01, -0.18, 1.355)) @ Euler((math.radians(-6), math.radians(8), math.radians(18))).to_matrix().to_4x4()
-    bmesh.ops.transform(bm, matrix=tilt, verts=bm.verts[:])
+    bmesh.ops.transform(bm, matrix=CROWN_TILT, verts=bm.verts[:])
 
 
 head_piece("Crown", crown, GOLD)
-head_piece("Gem", lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=8, v_segments=6, radius=0.026, matrix=Matrix.Translation((0.03, -0.345, 1.4))), GEM)
+gem_at = CROWN_TILT @ Vector((0.0, -0.17, 0.05))  # on the front of the band, wherever the crown tilts
+head_piece("Gem", lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=8, v_segments=6, radius=0.026, matrix=Matrix.Translation(gem_at)), GEM)
 
 body = join(objects, "SK_RatKing")
 mesh = body.data
