@@ -4,8 +4,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialogue"]
 bg_color = Color(0.05, 0.06, 0.1, 0.88)
-border_width_left = 6
-border_color = Color(1, 0.82, 0.25, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6

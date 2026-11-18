@@ -76,7 +76,6 @@ func _next_line() -> void:
 	var color: Color = SPEAKER_COLORS.get(entry[0], Color.WHITE)
 	speaker_label.modulate = color
 	portrait.texture = PORTRAITS.get(entry[0])
-	(dialogue.get_theme_stylebox("panel") as StyleBoxFlat).border_color = color
 	line_label.text = entry[1]
 	line_label.visible_ratio = 0.0
 	dialogue.show()

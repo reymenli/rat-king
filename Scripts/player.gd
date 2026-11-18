@@ -19,6 +19,7 @@ signal got_hurt
 
 @export_group("Movement")
 @export var walk_speed := 5.0
+@export var vehicle_speed := 8.5  # riding the Rat Car
 @export var jump_velocity := 4.5
 @export var acceleration := 30.0
 @export var turn_speed := 12.0
@@ -63,6 +64,10 @@ var _safe_now := Vector3.ZERO
 var _safe_before := Vector3.ZERO
 var _safe_timer := 0.0
 var _point: PointModifier
+var in_vehicle := false
+var _vehicle: Node3D  # the rats carrying the player
+
+const RAT_MODEL := preload("res://assets/models/characters/rats/SK_Rat_E.glb")
 
 func _ready() -> void:
 	add_to_group("player")
@@ -92,7 +97,7 @@ func _physics_process(delta: float) -> void:
 	# jumping and falling
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-	elif Input.is_action_just_pressed("jump"):
+	elif Input.is_action_just_pressed("jump") and not in_vehicle:  # the Rat Car can't jump
 		velocity.y = jump_velocity
 
 	#walking relative to camera
@@ -100,7 +105,7 @@ func _physics_process(delta: float) -> void:
 	var direction := Vector3(input_dir.x, 0.0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, camera.global_rotation.y)
 
-	var target := direction * walk_speed
+	var target := direction * (vehicle_speed if in_vehicle else walk_speed)
 
 	velocity.x = move_toward(velocity.x, target.x, acceleration * delta)
 	velocity.z = move_toward(velocity.z, target.z, acceleration * delta)
@@ -205,6 +210,8 @@ func _update_safe_spot(delta: float) -> void:
 # Called by hazards. The Rat King cannot faint, so they are put back on safe ground.
 # shortcut: a teleport instead of a physics knockback, so pits and flat hazards share one path.
 func hurt() -> void:
+	if in_vehicle:
+		return  # the Rat Car rolls over floor hazards
 	global_position = _safe_before
 	_safe_now = _safe_before
 	velocity = Vector3(0, 3.0, 0)
@@ -255,6 +262,27 @@ func _animate(direction: Vector3) -> void:
 		_play("Walk")
 
 # The pointing animation, played when a command is given.
+# Vehicle ability: a pack of rats under the player's feet. Faster, no jumping, floor hazards don't hurt.
+func set_vehicle(value: bool) -> void:
+	in_vehicle = value
+	if _vehicle:
+		_vehicle.queue_free()
+		_vehicle = null
+	mesh.position.y = 0.12 if value else 0.0  # riding on top of the rats
+	if not value:
+		return
+	_vehicle = Node3D.new()
+	mesh.add_child(_vehicle)
+	for i in 10:
+		var rat := RAT_MODEL.instantiate() as Node3D
+		_vehicle.add_child(rat)
+		rat.position = Vector3((i % 2 - 0.5) * 0.24, -0.97, (i / 2 - 2.0) * 0.2)
+		rat.rotation.y = PI  # nose forward, the same way as the player model
+		var anim := rat.get_node("AnimationPlayer") as AnimationPlayer
+		anim.play("Run")
+		anim.seek(i * 0.13)  # out of step, so it scurries instead of marching
+
+
 func gesture() -> void:
 	_play("Command")
 

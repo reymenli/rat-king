@@ -10,9 +10,10 @@ signal state_changed(new_state: int)
 
 var _follow_player: Node3D
 
-var speed = 3.0
+var speed = 5.5  # a little faster than the player, so the line can keep up
 var turn_speed = 10.0
 const FOLLOW_DISTANCE := 1.0
+var follow_distance := FOLLOW_DISTANCE  # how close to its target a following rat stops
 const ARRIVE_DISTANCE := 0.3  # how close counts as "there" for Go To
 const STUCK_TIME := 1.0  # seconds of getting nowhere before the rat gives up
 const REJOIN_DELAY := 10.0  # seconds a fainted rat is gone for
@@ -90,8 +91,9 @@ func stay() -> void:
 		return
 	_set_state(State.STAY)
 
-func follow(target: Node3D) -> void:
-	_follow_player = target # We get the player node and store it as a variable.
+func follow(target: Node3D, distance := FOLLOW_DISTANCE) -> void:
+	_follow_player = target # The player, or the rat's spot in the line behind the player.
+	follow_distance = distance
 	if state == State.FAINTED:
 		return
 	_set_state(State.FOLLOW)
@@ -138,10 +140,10 @@ func _process_follow() -> void:
 	var to_target := _follow_player.global_position - global_position
 	to_target.y = 0.0
 	# So rats keep a distance away when following player
-	if to_target.length() < FOLLOW_DISTANCE or navigation_agent_3d.is_navigation_finished():
+	if to_target.length() < follow_distance or navigation_agent_3d.is_navigation_finished():
 		velocity.x = 0.0
 		velocity.z = 0.0
-		_steering = to_target.length() > FOLLOW_DISTANCE * 3.0  # the path ended but the player is still far away
+		_steering = to_target.length() > maxf(follow_distance, FOLLOW_DISTANCE) * 3.0  # the path ended but the target is still far away
 		return
 
 	_steer_along_path()

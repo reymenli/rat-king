@@ -9,6 +9,8 @@ extends Node
 
 var zones_done := {}  # zone name -> true, used to unseal the final pipe
 var dialogue_seen := {}  # "Area/Trigger" -> true, so lines play once per run
+var has_cheese := false  # taken in the final zone, shows on the hideout table
+var won := false  # the win screen has been shown
 
 var _level: Node
 
@@ -16,6 +18,10 @@ var _level: Node
 func _ready() -> void:
 	add_to_group("level_manager")
 	go_to(start_level)
+
+
+func show_win() -> void:
+	add_child(preload("res://Scripts/win_screen.gd").new())
 
 
 # Testing shortcut from Settings: both wings done, 99 rats in the bank, straight to the final zone.

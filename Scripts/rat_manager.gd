@@ -14,9 +14,21 @@ const RECRUIT_RADIUS := 5.0  # Follow also recruits free rats this close to the 
 
 const STACK_RATS := 4
 const BRIDGE_RATS := 6
+const VEHICLE_RATS := 20
+const FIST_RATS := 30
+const RATAZORD_RATS := 99  # every rat but the last, who waits behind the scientist
+const FIST_RANGE := 12.0
+const RAT_MODEL := preload("res://assets/models/characters/rats/SK_Rat_E.glb")
 var structures: Array[Rat_Structure] = []
 
 var rats_out: Array[Rat] = []
+
+# Following rats walk in single file: the player's path is recorded as a trail, and each
+# following rat chases its own spot on it, LINE_GAP metres apart.
+const LINE_GAP := 0.75
+const TRAIL_STEP := 0.15
+var _trail: PackedVector3Array = []  # newest first
+var _spots: Array[Node3D] = []
 var selection: Array[Rat] = []  # rats tagged with left click. Commands go to these when there are any
 var rat_total : int
 var rat_available : int
@@ -26,11 +38,19 @@ enum COMMAND {
 	STAY,
 	MOVE_TO,
 	STACK,
-	BRIDGE
+	BRIDGE,
+	VEHICLE,
+	FIST,
+	RATAZORD
 }
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	add_to_group("rat_manager")
+	for i in MAX_FOLLOWING:
+		var spot := Node3D.new()
+		spot.top_level = true
+		add_child(spot)
+		_spots.append(spot)
 	var wheel := player.command_wheel as Command_Wheel
 	wheel.ability_chosen.connect(_on_ability_chosen)
 	wheel.hover_changed.connect(_show_ghost)
@@ -65,6 +85,20 @@ func clear_selection() -> void:
 
 # Runs an ability. Goes to the aimed rat if there is one, else to the tagged rats, else to every rat out.
 func command(ability: COMMAND, target: Rat = null) -> void:
+	if ability == COMMAND.VEHICLE:
+		if rat_total >= VEHICLE_RATS:
+			player.set_vehicle(not player.in_vehicle)
+		return
+	if ability == COMMAND.FIST:
+		if rat_total >= FIST_RATS:
+			_fist()
+		return
+	if ability == COMMAND.RATAZORD:
+		if rat_total >= RATAZORD_RATS:
+			_ratazord()
+		return
+	if ability == COMMAND.FOLLOW and target == null:
+		player.set_vehicle(false)  # Follow is the universal release
 	var tagged: Array[Rat] = selection.filter(func(r: Rat) -> bool: return is_instance_valid(r) and r in rats_out)
 	clear_selection()
 	if ability == COMMAND.BRIDGE:
@@ -88,13 +122,136 @@ func command(ability: COMMAND, target: Rat = null) -> void:
 	for i in selected.size():
 		var rat := selected[i]
 		if ability == COMMAND.FOLLOW:
-			rat.follow(player)
+			_follow_in_line(rat)
 		if ability == COMMAND.STAY:
 			rat.stay()
 		if ability == COMMAND.MOVE_TO:
 			# Each rat gets its own spot in a small ring so they do not fight over one point.
 			var spot := Vector3.ZERO if selected.size() == 1 else Vector3.RIGHT.rotated(Vector3.UP, i * TAU / selected.size()) * 0.3
 			rat.move_to(player.aim_point + spot)
+
+func _follow_in_line(rat: Rat) -> void:
+	rat.follow(_spots[0], 0.2)  # the real spot is set every frame in _update_line
+
+
+func _physics_process(_delta: float) -> void:
+	_update_line()
+
+
+func _update_line() -> void:
+	var feet := _player_feet()
+	if _trail.is_empty() or _trail[0].distance_to(feet) > TRAIL_STEP:
+		_trail.insert(0, feet)
+		_trail.resize(mini(_trail.size(), int(LINE_GAP * (MAX_FOLLOWING + 1) / TRAIL_STEP) + 2))
+	var place := 0
+	for rat in rats_out:
+		if rat.state != Rat.State.FOLLOW or not rat._follow_player in _spots:
+			continue
+		var spot := _spots[place]
+		spot.global_position = _trail_point((place + 1) * LINE_GAP)
+		rat._follow_player = spot
+		place += 1
+
+
+# The point `distance` metres back along the player's path.
+func _trail_point(distance: float) -> Vector3:
+	var walked := 0.0
+	for i in range(1, _trail.size()):
+		var step := _trail[i - 1].distance_to(_trail[i])
+		if walked + step >= distance:
+			return _trail[i - 1].lerp(_trail[i], (distance - walked) / step)
+		walked += step
+	return _trail[-1] if not _trail.is_empty() else _player_feet()
+
+
+func _say(speaker: String, line: String) -> void:
+	(get_tree().get_first_node_in_group("hud") as HUD).say(speaker, [line])
+
+
+# A ball of rats, used for the Giant Fist.
+func _rat_ball(count: int, radius: float) -> Node3D:
+	var ball := Node3D.new()
+	ball.top_level = true
+	add_child(ball)
+	for i in count:
+		var rat := RAT_MODEL.instantiate() as Node3D
+		ball.add_child(rat)
+		var dir := Vector3.FORWARD.rotated(Vector3.UP, i * 2.4).rotated(Vector3.RIGHT, (i % 5) * 0.6 - 1.2)
+		rat.position = dir * radius
+		rat.look_at_from_position(rat.position, Vector3.ZERO)
+		(rat.get_node("AnimationPlayer") as AnimationPlayer).play("Brace")
+	return ball
+
+
+# Giant Fist: aim at a breakable wall, the rats ball up into a fist and smash it.
+func _fist() -> void:
+	var wall := _breakable_under_crosshair()
+	if wall == null:
+		_say("Rat King", "gotta aim the fist at somethin breakable.")
+		return
+	var fist := _rat_ball(28, 0.55)
+	var start: Vector3 = player.global_position + Vector3.UP * 0.8 - player.camera.global_basis.z * 0.8
+	fist.global_position = start
+	var hit: Vector3 = player.aim_point
+	var tween := create_tween()
+	tween.tween_property(fist, "global_position", start - player.camera.global_basis.z * 0.4, 0.15)  # wind up
+	tween.tween_property(fist, "global_position", hit, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(wall.queue_free)
+	tween.tween_property(fist, "scale", Vector3.ZERO, 0.3)
+	tween.tween_callback(fist.queue_free)
+
+
+func _breakable_under_crosshair() -> Node3D:
+	var node: Node = player.aim_collider
+	if player.global_position.distance_to(player.aim_point) > FIST_RANGE:
+		return null
+	while node:
+		if node.is_in_group("breakable"):
+			return node as Node3D
+		node = node.get_parent()
+	return null
+
+
+# Ratazord: the finale. A giant rat smashes the glass and sends the scientist flying,
+# then the last rat (who was behind the scientist) joins as the 100th.
+func _ratazord() -> void:
+	var scientist := get_tree().get_first_node_in_group("scientist") as Node3D
+	if scientist == null:
+		_say("Rat King", "not here. save it for the guy with the cheese.")
+		return
+	var glass := get_tree().get_nodes_in_group("ratazord_glass")
+	var target := scientist.global_position
+	if not glass.is_empty():
+		target = (glass[0] as Node3D).global_position
+		for pane in glass:
+			target = target.lerp((pane as Node3D).global_position, 0.5)
+	var mech := RAT_MODEL.instantiate() as Node3D
+	mech.top_level = true
+	add_child(mech)
+	mech.global_position = player.global_position - Vector3.UP * 0.85
+	mech.scale = Vector3.ONE * 0.5
+	mech.look_at(Vector3(target.x, mech.global_position.y, target.z), Vector3.UP, true)
+	(mech.get_node("AnimationPlayer") as AnimationPlayer).play("Run")
+	_say("Scientist", "wait. WAIT. that's not... that's not POSSIBLE--")
+	var tween := create_tween()
+	tween.tween_property(mech, "scale", Vector3.ONE * 7.0, 0.8).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(mech, "global_position", Vector3(target.x, mech.global_position.y, target.z), 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		for pane in get_tree().get_nodes_in_group("ratazord_glass"):
+			pane.queue_free()
+		var away := (scientist.global_position - target).normalized() * 6.0 + Vector3.UP * 3.0
+		var fly := create_tween().set_parallel()
+		fly.tween_property(scientist, "global_position", scientist.global_position + away, 0.9)
+		fly.tween_property(scientist, "rotation:x", scientist.rotation.x - TAU * 2.0, 0.9)
+		fly.chain().tween_callback(scientist.queue_free)
+		_say("Scientist", "NOOOOooo..."))
+	tween.tween_interval(0.6)
+	tween.tween_property(mech, "scale", Vector3.ZERO, 0.4)
+	tween.tween_callback(mech.queue_free)
+	tween.tween_callback(func() -> void:
+		add_to_bank(1)  # the last rat was waiting behind him
+		_say("Rat King", "that's what ya get, four-eyes. and that makes a hundred. now... the cheese."))
+
 
 func _on_ability_chosen(ability: COMMAND) -> void:
 	player.gesture()
@@ -117,7 +274,7 @@ func recruit(rat: Rat) -> void:
 		if rat.get_parent() != self: # If the rat isn't under rat manager, but is under the level
 			rat.reparent(self) #Make it a child of rat_manager
 		rats_out.append(rat)
-		rat.follow(player)
+		_follow_in_line(rat)
 	else: # If you recruited and already have 5 following you, it just gets rid of it
 		rat.queue_free()
 	count_changed.emit(rat_total)
@@ -127,7 +284,7 @@ func gather() -> void:
 	_release_structures()
 	for rat in rats_out:
 		rat.global_position = _beside_player()
-		rat.follow(player)
+		_follow_in_line(rat)
 
 func _can_build(count: int) -> bool:
 	return player.is_on_floor() and count <= rat_available
@@ -217,7 +374,7 @@ func _refill() -> void:
 		add_child(rat)
 		rat.global_position = _beside_player()
 		rats_out.append(rat)
-		rat.follow(player)
+		_follow_in_line(rat)
 		in_bank -= 1
 
 # A spot near the player's feet, spread out so new rats do not spawn inside each other.

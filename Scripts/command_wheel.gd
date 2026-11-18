@@ -16,9 +16,9 @@ const SLICES := [
 	["Follow", Rat_Manager.COMMAND.FOLLOW, 0],
 	["Stay", Rat_Manager.COMMAND.STAY, 0],
 	["Bridge", Rat_Manager.COMMAND.BRIDGE, Rat_Manager.BRIDGE_RATS],
-	["Vehicle", -1, 20],
-	["Ratazord", -1, 100],
-	["Fist", -1, 30],
+	["Vehicle", Rat_Manager.COMMAND.VEHICLE, Rat_Manager.VEHICLE_RATS],
+	["Ratazord", Rat_Manager.COMMAND.RATAZORD, Rat_Manager.RATAZORD_RATS],
+	["Fist", Rat_Manager.COMMAND.FIST, Rat_Manager.FIST_RATS],
 	["Stack", Rat_Manager.COMMAND.STACK, Rat_Manager.STACK_RATS],
 	["Go To", Rat_Manager.COMMAND.MOVE_TO, 0],
 ]

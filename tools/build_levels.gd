@@ -152,6 +152,10 @@ func build_hideout() -> void:
 
 	var furniture := HIDE + "furniture/SM_Hide_%s.glb"
 	put(furniture % "Cheese_Table", Vector3(7, 0, 7), 0.0, geo)
+	var trophy := put("res://assets/models/cheese.glb", Vector3(7.5, 1.09, 7))
+	trophy.name = "TrophyCheese"
+	var trophy_area := _trigger("TrophyCheeseArea", "res://Scripts/trophy_cheese.gd", Vector3(7, 1.0, 7), Vector3(2.6, 2, 2.6))
+	trophy_area.cheese = trophy
 	# TV corner
 	put(furniture % "TV_Stack", Vector3(1.2, 0, 11.0), 90.0, geo)
 	put(furniture % "Couch_Sectional_Brown", Vector3(4.4, 0, 11.4), -90.0, geo)
@@ -294,21 +298,32 @@ func build_final_zone() -> void:
 	for x in 3:
 		portal(Vector2i(x, 2), Vector2i(x, 3), "open")
 		portal(Vector2i(x, -5), Vector2i(x, -6), "open")
-		put(LAB + "architecture/glass/SM_Glass_Wall_2x3.glb", at(x, -5) + Vector3(0, 0, -1), 0.0, geo)
-	portal(Vector2i(1, 0), Vector2i(1, -1), "doorway")
+		var glass := put(LAB + "architecture/glass/SM_Glass_Wall_2x3.glb", at(x, -5) + Vector3(0, 0, -1), 0.0, geo)
+		glass.scale.x = 0.96  # neighbouring frames and the side walls would overlap and flicker
+		glass.add_to_group("ratazord_glass", true)
+	portal(Vector2i(1, 0), Vector2i(1, -1), "open")  # a cracked wall fills it, Giant Fist breaks it
 	build_shell()
+	var cracked := put(LAB + "architecture/walls/SM_Wall_Breakable_2x3.glb", Vector3(3, 0, 0), 0.0, geo)
+	cracked.add_to_group("breakable", true)
+	say("Crack", at(1, 1), Vector3(5, 3, 2), "Rat King", [
+		"cracked wall. a big enough fist goes right through that. [aim at the wall, Q, Fist]"])
 
 	tube("Final_Sealed", Vector3(3, 0, 6), 180.0, "Red", "hideout.tscn", "FromFinal", "PlayerSpawn")
 	put(HIDE + "furniture/SM_Hide_Cheese_Table.glb", at(1, -7), 0.0, geo)
-	put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
-	put("res://assets/models/characters/scientist/SK_Scientist.glb", at(0, -6) + Vector3(0.3, 0, 0.2), 20.0)  # gloating at the glass
+	var cheese := put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
+	cheese.name = "Cheese"
+	var pickup := _trigger("CheesePickup", "res://Scripts/cheese_pickup.gd", at(1, -7, 1.0), Vector3(2.4, 2, 2.4))
+	pickup.cheese = cheese
+	var scientist := put("res://assets/models/characters/scientist/SK_Scientist.glb", at(0, -6) + Vector3(0.3, 0, 0.2), 20.0)  # gloating at the glass
+	scientist.name = "Scientist"
+	scientist.add_to_group("scientist", true)
 	_light(at(1, -7, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
 	say("Glass", at(1, -3), Vector3(5, 3, 1.5), "Scientist", [
 		"ahh, K-1. all this way for the cheese... again.",
 		"you'll need a LOT more friends to get through MY glass. a LOT more! mwahahaha!"])
 	say("Glass2", at(1, -4), Vector3(5, 3, 1.5), "Rat King", [
 		"again?? whaddya mean again...",
-		"whatever. ninety-nine of my guys and that glass is history. that cheese is MINE."])
+		"whatever. ninety-nine of my guys and that glass is history. that cheese is MINE. [Q, Ratazord]"])
 	finish("final_zone.tscn")
 
 
