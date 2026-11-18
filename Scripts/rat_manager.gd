@@ -203,6 +203,13 @@ func _release_structures() -> void:
 	rat_available = rat_total
 	_refill()
 
+# Puts rats straight into the bank (the skip button in Settings uses this).
+func add_to_bank(count: int) -> void:
+	rat_total += count
+	rat_available += count
+	_refill()
+	count_changed.emit(rat_total)
+
 func _refill() -> void:
 	var in_bank := rat_available - rats_out.size()
 	while rats_out.size() < MAX_FOLLOWING and in_bank > 0:

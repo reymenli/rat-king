@@ -3,6 +3,10 @@ extends CanvasLayer
 # Crosshair, rat and key counters, the "E" prompt and the dialogue box.
 
 const SPEAKER_COLORS := {"Rat King": Color(1.0, 0.82, 0.25), "Scientist": Color(0.45, 0.85, 1.0)}
+const PORTRAITS := {
+	"Rat King": preload("res://assets/ui/portraits/rat_king.png"),
+	"Scientist": preload("res://assets/ui/portraits/scientist.png"),
+}
 
 @onready var crosshair: ColorRect = $Crosshair
 @onready var rat_count: Label = $RatCount
@@ -10,8 +14,9 @@ const SPEAKER_COLORS := {"Rat King": Color(1.0, 0.82, 0.25), "Scientist": Color(
 @onready var prompt: Label = $Prompt
 @onready var flash: ColorRect = $Flash
 @onready var dialogue: Control = $Dialogue
-@onready var speaker_label: Label = $Dialogue/Margin/Rows/Speaker
-@onready var line_label: RichTextLabel = $Dialogue/Margin/Rows/Line
+@onready var speaker_label: Label = $Dialogue/Margin/Cols/Rows/Speaker
+@onready var line_label: RichTextLabel = $Dialogue/Margin/Cols/Rows/Line
+@onready var portrait: TextureRect = $Dialogue/Margin/Cols/Portrait
 
 var _player: CharacterBody3D
 var _queue: Array = []  # [speaker, text] pairs waiting to be shown
@@ -68,11 +73,14 @@ func _next_line() -> void:
 		return
 	var entry: Array = _queue.pop_front()
 	speaker_label.text = entry[0]
-	speaker_label.modulate = SPEAKER_COLORS.get(entry[0], Color.WHITE)
+	var color: Color = SPEAKER_COLORS.get(entry[0], Color.WHITE)
+	speaker_label.modulate = color
+	portrait.texture = PORTRAITS.get(entry[0])
+	(dialogue.get_theme_stylebox("panel") as StyleBoxFlat).border_color = color
 	line_label.text = entry[1]
 	line_label.visible_ratio = 0.0
 	dialogue.show()
-	_time_left = 2.5 + entry[1].length() * 0.06  # lines also move on by themselves
+	_time_left = 2.0 + entry[1].length() * 0.05  # time to read, then the next line plays by itself
 
 
 func _process(delta: float) -> void:
@@ -84,11 +92,3 @@ func _process(delta: float) -> void:
 	_time_left -= delta
 	if _time_left <= 0.0:
 		_next_line()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if dialogue.visible and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_ENTER:
-		if line_label.visible_ratio < 1.0:
-			line_label.visible_ratio = 1.0
-		else:
-			_next_line()

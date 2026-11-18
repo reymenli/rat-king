@@ -147,6 +147,16 @@ func _initialize() -> void:
 	await wait(1.0)
 	check(manager._level.name == "FinalZone" and player.is_on_floor(), "the final pipe opens once both zones are done")
 
+	# dialogue plays once per run, even after coming back to an area
+	manager.go_to("res://Scenes/levels/hideout.tscn", "FromTutorial")
+	await wait(0.2)
+	check(manager.dialogue_seen.has("Hideout/SayHome") and manager._level.get_node_or_null("Triggers/SayHome") == null, "hideout lines do not replay on a second visit")
+
+	# Settings skip button: 99 rats and straight to the final zone
+	manager.skip_to_final()
+	await wait(0.5)
+	check(manager._level.name == "FinalZone" and rat_manager.rat_total >= 99, "skip to the cheese gives 99 rats and loads the final zone")
+
 	print("smoke test: %d failure(s)" % failures)
 	quit(failures)
 

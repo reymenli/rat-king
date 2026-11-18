@@ -7,7 +7,7 @@ const GAME := "res://Scenes/level_manager.tscn"
 const TITLE := "res://Scenes/main_menu.tscn"
 const CONTROLS := """WASD  move        Space  jump
 Mouse  look        Right click (hold)  aim        Scroll  zoom
-E  interact        V  first person        Enter  next line
+E  interact        V  first person
 Hold Q  command wheel: move onto a slice and let go to pick it.
 Let go in the middle, or right click, to cancel.
 Aim at one rat to command only that rat, or left click rats to tag a group.
@@ -30,6 +30,8 @@ func _ready() -> void:
 	$Center/Rows/Main/Exit.pressed.connect(get_tree().quit)
 	$Center/Rows/Settings/Back.pressed.connect(_show_settings.bind(false))
 	to_title.visible = pause_menu
+	$Center/Rows/Settings/SkipToFinal.visible = pause_menu  # only makes sense in a running game
+	$Center/Rows/Settings/SkipToFinal.pressed.connect(_skip_to_final)
 	if pause_menu:
 		process_mode = Node.PROCESS_MODE_ALWAYS  # keeps working while the game is paused
 		$Background.color.a = 0.6  # dim the game instead of hiding it
@@ -64,6 +66,11 @@ func _set_paused(value: bool) -> void:
 		_show_settings(false)
 
 
+func _skip_to_final() -> void:
+	_set_paused(false)
+	(get_tree().get_first_node_in_group("level_manager") as Level_Manager).skip_to_final()
+
+
 func _go_to_title() -> void:
 	get_tree().paused = false
 	get_tree().change_scene_to_file(TITLE)
@@ -72,4 +79,5 @@ func _go_to_title() -> void:
 func _show_settings(value: bool) -> void:
 	settings.visible = value
 	main_buttons.visible = not value
+	$Center/Rows/Title.visible = not value  # the controls list needs the room
 	(volume if value else play).grab_focus()

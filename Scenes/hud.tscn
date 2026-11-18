@@ -74,7 +74,7 @@ anchor_left = 0.12
 anchor_top = 1.0
 anchor_right = 0.88
 anchor_bottom = 1.0
-offset_top = -170.0
+offset_top = -180.0
 offset_bottom = -36.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dialogue")
 
@@ -85,23 +85,28 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 12
 
-[node name="Rows" type="VBoxContainer" parent="Dialogue/Margin"]
+[node name="Cols" type="HBoxContainer" parent="Dialogue/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 18
 
-[node name="Speaker" type="Label" parent="Dialogue/Margin/Rows"]
+[node name="Portrait" type="TextureRect" parent="Dialogue/Margin/Cols"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Rows" type="VBoxContainer" parent="Dialogue/Margin/Cols"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Speaker" type="Label" parent="Dialogue/Margin/Cols/Rows"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "Rat King"
 
-[node name="Line" type="RichTextLabel" parent="Dialogue/Margin/Rows"]
+[node name="Line" type="RichTextLabel" parent="Dialogue/Margin/Cols/Rows"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/normal_font_size = 22
 text = "..."
-
-[node name="Hint" type="Label" parent="Dialogue/Margin/Rows"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.5)
-theme_override_font_sizes/font_size = 14
-text = "Enter to continue"
-horizontal_alignment = 2

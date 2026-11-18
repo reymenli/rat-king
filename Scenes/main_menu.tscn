@@ -82,7 +82,15 @@ value = 100.0
 [node name="Controls" type="Label" parent="Center/Rows/Settings"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.8)
-theme_override_font_sizes/font_size = 18
+theme_override_constants/line_spacing = -2
+theme_override_font_sizes/font_size = 16
+
+[node name="SkipToFinal" type="Button" parent="Center/Rows/Settings"]
+custom_minimum_size = Vector2(280, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Skip to the cheese (99 rats, for testing)"
 
 [node name="Back" type="Button" parent="Center/Rows/Settings"]
 custom_minimum_size = Vector2(280, 56)

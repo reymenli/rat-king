@@ -8,6 +8,7 @@ extends Node
 @export_file("*.tscn") var start_level := "res://Scenes/levels/tutorial.tscn"
 
 var zones_done := {}  # zone name -> true, used to unseal the final pipe
+var dialogue_seen := {}  # "Area/Trigger" -> true, so lines play once per run
 
 var _level: Node
 
@@ -15,6 +16,14 @@ var _level: Node
 func _ready() -> void:
 	add_to_group("level_manager")
 	go_to(start_level)
+
+
+# Testing shortcut from Settings: both wings done, 99 rats in the bank, straight to the final zone.
+func skip_to_final() -> void:
+	zones_done["left"] = true
+	zones_done["right"] = true
+	rat_manager.add_to_bank(maxi(0, 99 - rat_manager.rat_total))
+	go_to("res://Scenes/levels/final_zone.tscn")
 
 
 # Loads an area and puts the player on the Marker3D called `spawn` inside it.

@@ -45,7 +45,7 @@ Branches: `origin/feature/plate-lever` and `origin/rat-development` are both alr
 
 **Run the game:** main scene is `Scenes/main_menu.tscn` (Play, Settings with volume and controls, Exit). Play loads `Scenes/level_manager.tscn`. It holds the player, Rat_Manager and HUD, and loads areas from `Scenes/levels/` into itself (`Level_Manager.go_to`).
 
-**Controls:** WASD move, Space jump (no sprint, so a jump clears about 4.6 m and the 6 m pits need Bridge), mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Enter skips a dialogue line, Esc opens the pause menu (Resume, Settings with volume and controls, Main Menu, Quit). The pause menu is `main_menu.tscn` with `pause_menu = true`, under `PauseLayer` in `level_manager.tscn`.
+**Controls:** WASD move, Space jump (no sprint, so a jump clears about 4.6 m and the 6 m pits need Bridge), mouse look, hold right click to aim (zoom), scroll to zoom, V first person, E interact, hold Q for the command wheel, Esc opens the pause menu (Resume, Settings with volume and controls, Main Menu, Quit). The pause menu is `main_menu.tscn` with `pause_menu = true`, under `PauseLayer` in `level_manager.tscn`.
 
 **Command wheel** (`Scripts/command_wheel.gd`): drawn in code at the screen centre. Hold Q, move the mouse onto a slice, let go to pick. Letting go in the middle or right clicking cancels. The game is paused while it is open. Slices are greyed out when the bank is too small. Vehicle, Fist and Ratazord are shown but always grey (week 4 and 5 work).
 
@@ -95,11 +95,12 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 - Rats that cannot reach the player (closed door, ledge, pit) pop up next to the player after 1 second.
 - "Go To" (the teammate's MOVE_TO command) sits in the wheel's eighth slot instead of "???".
 - No sounds, no win screen, no Vehicle / Fist / Ratazord yet.
-- HUD rat sticker and dialogue headshots are text only.
+- HUD rat sticker is text only. Dialogue headshots are static renders (no expressions yet).
 - The smoke test gate check was flaky once (random rat spawn spots). It prints rat positions if it fails again.
 
 ## Status
 
+- 11/17/26: dialogue cut to 13 short triggers with a royal Rat King and a clinical Scientist voice, control hints in [brackets]. Lines auto-advance (no Enter), play once per run (`Level_Manager.dialogue_seen`), and the box shows a headshot (`assets/ui/portraits/`, rendered by `blender/make_portraits.py`, Scientist is a placeholder bust). Pause menu Settings has "Skip to the cheese" (99 rats, both wings done, loads the final zone) for testing.
 - 11/17/26: Esc pause menu, rat tagging, build ghost, aim point, no sprint with 6 m pits, tube signs, camera fixes (shoulder pulled in near walls, pipe lids). Smoke test 0 failures over repeated runs.
 - 11/17/26: rat Brace, Form and HopOut clips added and used by Bridge and Stack. Smoke test 0 failures.
 - 11/17/26: main menu and settings added (week 4 schedule item). Next: sounds, win screen, rat sticker, then zone polish.
