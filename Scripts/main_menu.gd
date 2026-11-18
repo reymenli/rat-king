@@ -10,7 +10,7 @@ Mouse  look        Right click (hold)  aim        Scroll  zoom
 E  interact        V  first person        Enter  next line
 Hold Q  command wheel: move onto a slice and let go to pick it.
 Let go in the middle, or right click, to cancel.
-Aim at one rat to command only that rat.
+Aim at one rat to command only that rat, or left click rats to tag a group.
 Esc  pause menu"""
 
 @export var pause_menu := false

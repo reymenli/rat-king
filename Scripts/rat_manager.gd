@@ -1,6 +1,7 @@
 class_name Rat_Manager
 extends Node
 signal count_changed(total:int)
+signal selection_changed(count: int)
 
 @export var player: CharacterBody3D
 @export var rat_scene: PackedScene
@@ -16,6 +17,7 @@ const BRIDGE_RATS := 6
 var structures: Array[Rat_Structure] = []
 
 var rats_out: Array[Rat] = []
+var selection: Array[Rat] = []  # rats tagged with left click. Commands go to these when there are any
 var rat_total : int
 var rat_available : int
 
@@ -31,6 +33,8 @@ func _ready() -> void:
 	add_to_group("rat_manager")
 	var wheel := player.command_wheel as Command_Wheel
 	wheel.ability_chosen.connect(_on_ability_chosen)
+	wheel.hover_changed.connect(_show_ghost)
+	_ghost = _make_ghost()
 	count_changed.connect(func(total: int) -> void: wheel.rat_total = total)
 
 	for rat in get_children():
@@ -41,8 +45,28 @@ func _ready() -> void:
 	_refill.call_deferred()
 	count_changed.emit(rat_total)
 
-# Runs an ability. With a target it applies to that one rat, otherwise to every rat out.
+# Left click on a rat that follows you tags it, clicking again untags it.
+func toggle_selected(rat: Rat) -> void:
+	if rat not in rats_out:
+		return
+	if rat in selection:
+		selection.erase(rat)
+	else:
+		selection.append(rat)
+	rat.set_selected(rat in selection)
+	selection_changed.emit(selection.size())
+
+func clear_selection() -> void:
+	for rat in selection:
+		if is_instance_valid(rat):
+			rat.set_selected(false)
+	selection.clear()
+	selection_changed.emit(0)
+
+# Runs an ability. Goes to the aimed rat if there is one, else to the tagged rats, else to every rat out.
 func command(ability: COMMAND, target: Rat = null) -> void:
+	var tagged: Array[Rat] = selection.filter(func(r: Rat) -> bool: return is_instance_valid(r) and r in rats_out)
+	clear_selection()
 	if ability == COMMAND.BRIDGE:
 		_build(Rat_Structure.Structure.BRIDGE, BRIDGE_RATS)
 		return
@@ -51,7 +75,7 @@ func command(ability: COMMAND, target: Rat = null) -> void:
 		return
 	if ability == COMMAND.FOLLOW:
 		_recruit_nearby(target)
-		if target == null:
+		if target == null and tagged.is_empty():
 			_release_structures()
 	if ability == COMMAND.MOVE_TO:
 		_refill()
@@ -59,6 +83,8 @@ func command(ability: COMMAND, target: Rat = null) -> void:
 	var selected: Array[Rat] = rats_out
 	if target and target in rats_out:
 		selected = [target]
+	elif not tagged.is_empty():
+		selected = tagged
 	for i in selected.size():
 		var rat := selected[i]
 		if ability == COMMAND.FOLLOW:
@@ -103,10 +129,11 @@ func gather() -> void:
 		rat.global_position = _beside_player()
 		rat.follow(player)
 
+func _can_build(count: int) -> bool:
+	return player.is_on_floor() and count <= rat_available
+
 func _build(structure: Rat_Structure.Structure, count: int) -> void:
-	if not player.is_on_floor():
-		return
-	if count > rat_available:
+	if not _can_build(count):
 		return
 
 	for i in mini(count, rats_out.size()):
@@ -117,14 +144,57 @@ func _build(structure: Rat_Structure.Structure, count: int) -> void:
 	add_child(struct)
 	structures.append(struct)
 
-	var feet := _player_feet()
-	var yaw: float = player.mesh.global_rotation.y
+	struct.build(structure, count, _structure_feet(structure), _build_yaw())
 	if structure == Rat_Structure.Structure.STACK:
-		struct.build(structure, count, feet, yaw)
 		player.global_position.y += count * Rat_Structure.RAT_HEIGHT
-	elif structure == Rat_Structure.Structure.BRIDGE:
-		var forward: Vector3 = -player.mesh.global_basis.z
-		struct.build(structure, count, feet + forward * 0.5, yaw)
+
+# Structures are built the way the camera looks, so the ghost is always in front of the crosshair.
+func _build_yaw() -> float:
+	return player.camera_pivot.global_rotation.y
+
+# Where a structure starts: a Stack under the player, a Bridge just in front of them.
+func _structure_feet(structure: Rat_Structure.Structure) -> Vector3:
+	if structure == Rat_Structure.Structure.BRIDGE:
+		return _player_feet() + Basis(Vector3.UP, _build_yaw()) * Vector3(0, 0, -0.5)
+	return _player_feet()
+
+# See-through box showing where Bridge or Stack will go while its wheel slice is hovered.
+# Green when it can be built, red when it can't (too few rats, or in the air).
+var _ghost: MeshInstance3D
+
+func _make_ghost() -> MeshInstance3D:
+	var ghost := MeshInstance3D.new()
+	ghost.mesh = BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.no_depth_test = true  # still visible through the floor of a pit or a wall
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	ghost.material_override = mat
+	ghost.top_level = true
+	ghost.hide()
+	add_child(ghost)
+	return ghost
+
+func _show_ghost(ability: int) -> void:
+	var structure: Rat_Structure.Structure
+	var count: int
+	if ability == COMMAND.BRIDGE:
+		structure = Rat_Structure.Structure.BRIDGE
+		count = BRIDGE_RATS
+	elif ability == COMMAND.STACK:
+		structure = Rat_Structure.Structure.STACK
+		count = STACK_RATS
+	else:
+		_ghost.hide()
+		return
+	var box_size := Rat_Structure.box_size_for(structure, count)
+	(_ghost.mesh as BoxMesh).size = box_size
+	var basis := Basis(Vector3.UP, _build_yaw())
+	_ghost.global_transform = Transform3D(basis, _structure_feet(structure) + basis * Rat_Structure.box_center_for(structure, box_size))
+	var ok := _can_build(count)
+	(_ghost.material_override as StandardMaterial3D).albedo_color = Color(0.3, 1.0, 0.4, 0.35) if ok else Color(1.0, 0.25, 0.25, 0.35)
+	_ghost.show()
 
 func _release_structures() -> void:
 	for s in structures:

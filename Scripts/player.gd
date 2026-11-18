@@ -197,6 +197,8 @@ func hurt() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# Click to grab the mouse again (after alt-tab). Esc is the pause menu (main_menu.gd).
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and aimed_rat():
+			get_tree().get_first_node_in_group("rat_manager").toggle_selected(aimed_rat())
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		return
 

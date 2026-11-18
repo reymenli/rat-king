@@ -88,7 +88,7 @@ func _initialize() -> void:
 	# bridge carries the player over the spike pit
 	rat_manager.command(Rat_Manager.COMMAND.FOLLOW)
 	move_player(Vector3(24, 1, 9.5))
-	player.mesh.rotation.y = PI  # face +Z, towards the pit
+	player.camera_pivot.rotation.y = PI  # look +Z, towards the pit (structures follow the camera)
 	await wait(0.5)
 	rat_manager.command(Rat_Manager.COMMAND.BRIDGE)
 	check(rat_manager.structures.size() == 1, "Bridge builds with six rats")

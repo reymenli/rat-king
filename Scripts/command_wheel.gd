@@ -5,6 +5,7 @@ extends Control
 # Letting go with the cursor still in the middle, or right clicking, cancels.
 
 signal ability_chosen(ability: Rat_Manager.COMMAND)
+signal hover_changed(ability: int)  # the hovered slice's command, -1 for none. Drives the build ghost
 
 const OUTER_RADIUS := 230.0
 const INNER_RADIUS := 80.0  # the cancel zone in the middle
@@ -26,6 +27,7 @@ var rat_total := 0  # kept up to date by the Rat_Manager, used to grey out slice
 
 var _open := false
 var _cursor := Vector2.ZERO  # virtual cursor, measured from the centre of the wheel
+var _hovered := -1
 
 
 func _ready() -> void:
@@ -48,6 +50,7 @@ func _input(event: InputEvent) -> void:
 		_set_open(false)
 	elif event is InputEventMouseMotion:
 		_cursor = (_cursor + event.relative).limit_length(OUTER_RADIUS)
+		_update_hover()
 		queue_redraw()
 	get_viewport().set_input_as_handled()  # nothing else reacts while the wheel is open
 
@@ -57,7 +60,16 @@ func _set_open(value: bool) -> void:
 	_cursor = Vector2.ZERO
 	visible = value
 	get_tree().paused = value
+	_update_hover()
 	queue_redraw()
+
+
+func _update_hover() -> void:
+	var slice := _hovered_slice() if _open else -1
+	if slice == _hovered:
+		return
+	_hovered = slice
+	hover_changed.emit(SLICES[slice][1] if slice >= 0 else -1)
 
 
 func _is_enabled(slice: int) -> bool:

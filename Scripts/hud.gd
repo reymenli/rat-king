@@ -24,6 +24,9 @@ func _ready() -> void:
 	_player = get_tree().get_first_node_in_group("player")
 	var rats := get_tree().get_first_node_in_group("rat_manager") as Rat_Manager
 	rats.count_changed.connect(_show_rats)
+	rats.selection_changed.connect(func(n: int) -> void:
+		_selected = n
+		_show_rats(rats.rat_total))
 	_show_rats(rats.rat_total)
 	_player.keys_changed.connect(_show_keys)
 	_show_keys(_player.keys)
@@ -32,8 +35,10 @@ func _ready() -> void:
 	_player.got_hurt.connect(_flash_red)
 
 
+var _selected := 0
+
 func _show_rats(total: int) -> void:
-	rat_count.text = "Rats x%d" % total
+	rat_count.text = "Rats x%d" % total + ("  (%d tagged)" % _selected if _selected > 0 else "")
 
 
 func _show_keys(count: int) -> void:

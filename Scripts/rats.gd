@@ -26,9 +26,24 @@ enum State {
 
 var state: State = State.STAY
 
+var _marker: Label3D  # yellow arrow over the head while the rat is tagged
+
 var _steering := false  # true on frames where the rat is trying to get somewhere
 var _stuck_time := 0.0
 
+
+func set_selected(value: bool) -> void:
+	if _marker == null:
+		_marker = Label3D.new()
+		_marker.text = "▼"
+		_marker.font_size = 64
+		_marker.outline_size = 12
+		_marker.modulate = Color(1.0, 0.82, 0.25)
+		_marker.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_marker.no_depth_test = true
+		_marker.position.y = 0.55
+		add_child(_marker)
+	_marker.visible = value
 
 func _physics_process(delta: float) -> void:
 	if state == State.FAINTED:

@@ -19,19 +19,26 @@ const RATS_ACROSS := 4  # rats side by side, so the structure looks as wide as i
 
 @onready var collision: CollisionShape3D = $CollisionShape3D
 
+# Size and centre of the structure's box, relative to `feet`. Also used for the placement ghost.
+static func box_size_for(struct: Structure, count: int) -> Vector3:
+	if struct == Structure.STACK:
+		return Vector3(WIDTH, count * RAT_HEIGHT, WIDTH)
+	return Vector3(WIDTH, RAT_HEIGHT, count * RAT_LENGTH)
+
+
+static func box_center_for(struct: Structure, box_size: Vector3) -> Vector3:
+	if struct == Structure.STACK:
+		return Vector3(0, box_size.y / 2.0, 0)
+	return Vector3(0, -box_size.y / 2.0, -box_size.z / 2.0)
+
+
 # feet is for the floor, or where we're starting. yaw is the way the player is facing
 func build (struct: Structure, count: int, feet: Vector3, yaw: float) -> void:
 	global_position = feet
 	rotation.y = yaw
 
-	var box_size: Vector3
-	var center: Vector3
-	if struct == Structure.STACK:
-		box_size = Vector3(WIDTH, count * RAT_HEIGHT, WIDTH)
-		center = Vector3(0, box_size.y / 2.0, 0)
-	if struct == Structure.BRIDGE:
-		box_size = Vector3(WIDTH, RAT_HEIGHT, count * RAT_LENGTH)
-		center = Vector3(0, -box_size.y / 2.0, -box_size.z / 2.0)
+	var box_size := box_size_for(struct, count)
+	var center := box_center_for(struct, box_size)
 
 	var box := BoxShape3D.new()
 	box.size = box_size
