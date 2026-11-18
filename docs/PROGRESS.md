@@ -85,10 +85,10 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 ## Character direction (from the user, 11/17/26)
 
-- **Rat King:** a mutated rat with human-like traits, scrappy, not fancy and not heroic (no cape, no suit). Personality close to Deadlock's Rat King: gruff New York street rat, distrusts humans and "smart guys", calls his rats idiots but they're his idiots and he protects them. Obsessed with the cheese.
-- **Scientist:** the mad scientist trope, like Dr. Neo Cortex (Crash Bandicoot) or the PvZ scientist zombie: huge head, cackling, megalomaniac, ALL CAPS outbursts.
+- **Rat King:** a mutated rat with human-like traits: rat head and build (long snout, big ears, pink hands and tail, hunched), dressed in a navy suit, white shirt, red tie, black sunglasses and a gold crown. No brow, no tank top, no cape. Personality close to Deadlock's Rat King: gruff New York street rat, calls his rats idiots but they're his idiots, obsessed with the cheese.
+- **Scientist:** human-looking and regular, not a giant-headed Megamind: white lab coat, blue shirt, red tie, glasses, white hair with a receding hairline. His dialogue can still be the cackling mad scientist.
 - **Dialogue:** casual, lowercase is fine, rough grammar on purpose. Keep it short. Control hints go in [brackets].
-- **Modeling rules** (research notes): exaggerated proportions first, one mirrored mesh per body (no stacked primitives poking through each other), clear silhouette, detail only on the face, expressive eyes, limited palette with light/dark gradients, an attitude in the rest pose.
+- **Modeling rules** (research notes): build each body part separately (`blender/fused_mesh.py`), never fuse arms into the torso, exaggerated proportions first (no stacked primitives poking through each other), clear silhouette, detail only on the face, expressive eyes, limited palette with light/dark gradients, an attitude in the rest pose.
 
 ## Known gaps and decisions
 
@@ -107,6 +107,7 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 ## Status
 
+- 11/18/26: final zone rebuilt: cracked wall (Giant Fist), 8 m live floor hall (Vehicle), second cracked wall, then the scientist guards the cheese (blocks on collision layer 5, player only). Walking up plays the cutscene where the 100th rat runs out from behind him; Ratazord needs 100 and its mech smacks him aside. Cheese on the hideout table shows the win screen every time it's touched. Rat King and Scientist rebuilt from separate parts (`blender/fused_mesh.py`); the Rat King's parts are weighted only to their own bones.
 - 11/17/26: Vehicle (20, faster, no jump, floor hazards don't hurt, Follow gets off), Giant Fist (30, aim at the cracked wall in the final zone), Ratazord (99, final zone only: breaks the glass, scientist flies off, 100th rat joins), cheese pickup, trophy cheese on the hideout table and win screen. Rats follow in single file along the player's path. Dialogue box stripe removed, glass panes shrunk so frames stop flickering. User feedback still TODO: the fused Rat King and Scientist models were rejected. Rat King must have a suit, sunglasses and a real crown, no unibrow, no tank top, arms must not fuse with the belly (remesh the arms separately), keep the more rat-like shape. Scientist: normal head size, not Megamind (closer to the PvZ scientist zombie).
 - 11/17/26: Rat King and Scientist rebuilt to the character direction. Both are one fused low-poly mesh made from ellipsoids and tapered limbs (voxel remesh, smooth, decimate, nearest-shape vertex colours): `blender/make_rat_king.py` (rigged, same bone names and 7 clips) and `blender/make_scientist.py` (static, stands behind the glass in the final zone). Portraits re-rendered from them by `blender/make_portraits.py`.
 - 11/17/26: dialogue cut to 13 short triggers with a royal Rat King and a clinical Scientist voice, control hints in [brackets]. Lines auto-advance (no Enter), play once per run (`Level_Manager.dialogue_seen`), and the box shows a headshot (`assets/ui/portraits/`, rendered by `blender/make_portraits.py`, Scientist is a placeholder bust). Pause menu Settings has "Skip to the cheese" (99 rats, both wings done, loads the final zone) for testing.

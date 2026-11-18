@@ -13,7 +13,7 @@ SIZE = 256
 # (blend file, output, point to frame, direction the camera looks from, frame size in metres)
 SHOTS = [
     ("rat-king-character.blend", "rat_king.png", (0.0, -0.18, 1.33), (-0.5, -1.0, 0.4), 0.85),
-    ("scientist-character.blend", "scientist.png", (0.0, -0.22, 1.55), (0.5, -1.0, 0.1), 0.95),
+    ("scientist-character.blend", "scientist.png", (0.0, -0.08, 1.66), (0.45, -1.0, 0.12), 0.62),
 ]
 
 for blend, name, look_at, from_dir, ortho in SHOTS:
