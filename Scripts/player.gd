@@ -63,6 +63,7 @@ var _zoom := 3.2
 var _safe_now := Vector3.ZERO
 var _safe_before := Vector3.ZERO
 var _safe_timer := 0.0
+var _point: PointModifier
 
 func _ready() -> void:
 	add_to_group("player")
@@ -77,6 +78,11 @@ func _ready() -> void:
 	aim_ray.collide_with_areas = true # interactables are areas
 	aim_ray.enabled = true
 	reset_safe_spot()
+	if anim:
+		var skeleton := anim.get_parent().find_children("*", "Skeleton3D")[0] as Skeleton3D
+		_point = PointModifier.new()
+		_point.influence = 0.0
+		skeleton.add_child(_point)
 
 # Call after moving the player somewhere new, so a hazard cannot send them back to the old place.
 func reset_safe_spot() -> void:
@@ -121,6 +127,10 @@ func _update_camera(delta: float) -> void:
 	camera.fov = lerpf(camera.fov, aim_fov if aiming else default_fov, blend)
 	if mesh:
 		mesh.visible = not first_person
+	if _point:  # raise the right arm toward the crosshair while aiming
+		_point.influence = move_toward(_point.influence, 1.0 if aiming else 0.0, delta * 6.0)
+		_point.active = _point.influence > 0.0
+		_point.target = aim_point
 
 # Casts a ray along a line through the crosshair
 func _update_aim() -> void:
