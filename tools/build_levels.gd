@@ -82,8 +82,8 @@ func build_tutorial() -> void:
 	door_at(Vector2i(2, 1), Vector2i(3, 1)).levers.append(lever1)
 	sign_arrow("Green", Vector3(5.86, 2.4, 3), -90.0)
 	say("Start", at(1, 1), Vector3(5, 3, 5), "Rat King", [
-		"Another morning in this wretched Lab, and my subjects wander about with no one to lead them. [Esc shows the controls]",
-		"Two strays, right there. Let's remind them who wears the crown. [Hold Q, pick Follow. E pulls the lever]"])
+		"ugh. another mornin in this dump. and i can smell it... the cheese is in here somewhere. [Esc shows the controls]",
+		"couple of my guys wanderin around like idiots. they're my idiots tho. [hold Q, pick Follow. E pulls the lever]"])
 
 	# R2
 	var plate1: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(4, 0))
@@ -91,15 +91,15 @@ func build_tutorial() -> void:
 	door_at(Vector2i(6, 1), Vector2i(7, 1)).plates.append(plate1)
 	put(LAB + "signage/signs/SM_Sign_RatOnly.glb", Vector3(9, 1.6, 0.13))
 	say("Plate", at(3, 1), Vector3(1.5, 3, 5.5), "Rat King", [
-		"A plate that ignores royalty. Fine. My subjects can sit on it for me. [Aim at it, hold Q, pick Go To]"])
+		"plate don't care about me, only rats. fine. you two, go sit on it. [aim at it, hold Q, pick Go To]"])
 
 	# R3
 	put("res://Scenes/key.tscn", at(8, 2, 0.8))
 	cage_with_rats(at(10, 0) + Vector3(0.2, 0, -0.2), 0.0, 4)
 	say("Cage", at(7, 1), Vector3(1.5, 3, 5.5), "Scientist", [
-		"Subject K-1 has left its enclosure. Again. Don't recapture it. I want to see where it goes."])
+		"subject K-1 is OUT of its cage. AGAIN. no no, leave it! i want to see what it does. heh heh heh."])
 	say("Cage2", at(8, 1), Vector3(1.5, 3, 5.5), "Rat King", [
-		"Caging my own kin? Unforgivable. That key should set them free. [E on the cage]"])
+		"they caged my guys?? nobody cages my guys. gotta be a key around here somewhere. [E on the cage]"])
 
 	# R4
 	var button: TimedButton = put("res://Scenes/button.tscn", Vector3(29.87, 2.6, 3), -90.0)
@@ -107,7 +107,7 @@ func build_tutorial() -> void:
 	door_at(Vector2i(11, 2), Vector2i(11, 3)).buttons.append(button)
 	sign_arrow("Orange", Vector3(23, 2.5, 5.86), 180.0)
 	say("Stack", at(11, 1), Vector3(1.5, 3, 5.5), "Rat King", [
-		"A button that high is beneath a king. Luckily, my subjects make a fine staircase. [Q, Stack. Mind the timer]"])
+		"button's way up there. ok boys, pile up, the king's goin up. [Q, Stack. it's on a timer, move it]"])
 
 	# R5
 	for x in [11, 12]:
@@ -115,7 +115,7 @@ func build_tutorial() -> void:
 			put("res://Scenes/spikes.tscn", at(x, z, -1.0))
 	put(LAB + "signage/signs/SM_Sign_Spikes.glb", Vector3(22.13, 1.5, 9), 90.0)
 	say("Bridge", at(11, 3) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Rat King", [
-		"Spikes, and far too wide to jump. My subjects will pave the way. [Face the gap, Q, Bridge. Follow calls them back]"])
+		"spikes, and way too far to jump. alright, make me a bridge. nobody's gettin poked today. [face the gap, Q, Bridge. Follow calls em back]"])
 	var plate2: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(12, 8))
 	plate2.rats_needed = 3
 	var lever2: Lever = put("res://Scenes/lever.tscn", Vector3(22.13, 1.0, 19), 90.0)
@@ -123,12 +123,12 @@ func build_tutorial() -> void:
 	gate.plates.append(plate2)
 	gate.levers.append(lever2)
 	say("Gate", at(11, 8) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Rat King", [
-		"Two locks. Three subjects on the plate, one king on the lever."])
+		"two locks. three of yous on the plate, i got the lever."])
 
 	# R6
 	tube("Tutorial", Vector3(24, 0, 26), 180.0, "Green", "hideout.tscn", "FromTutorial", "FromHideout")
 	say("Exit", at(11, 10) + Vector3(1, 0, 0), Vector3(3.5, 3, 1.5), "Scientist", [
-		"Let it run along. The cheese stays right here with me."])
+		"run along, little rat. the cheese stays with ME. ahahaha!"])
 
 	finish("tutorial.tscn")
 
@@ -179,8 +179,8 @@ func build_hideout() -> void:
 		put("res://Scenes/rats.tscn", pos, pos.x * 67.0, rats)
 
 	say("Home", Vector3(7, 0, 10.5), Vector3(4, 3, 4), "Rat King", [
-		"Home. Not a white coat in sight.",
-		"Teal pipe to the left wing, orange to the right. The red one stays sealed until both are mine."])
+		"home sweet sewer. no lab coats down here.",
+		"teal pipe goes left, orange goes right. big red one stays shut till both are done. then... cheese."])
 	finish("hideout.tscn")
 
 
@@ -205,7 +205,7 @@ func build_left_zone() -> void:
 
 	tube("Left", Vector3(3, 0, 6), 180.0, "Teal", "hideout.tscn", "FromLeft", "PlayerSpawn")
 	say("Arrive", at(1, 1), Vector3(5, 3, 3), "Scientist", [
-		"Movement in the left wing. Log everything."])
+		"movement in the left wing! cameras! CAMERAS! somebody write this down!!"])
 
 	# B
 	var plate_a: PressurePlate = put("res://Scenes/pressure_plate.tscn", at(0, -3))
@@ -218,7 +218,7 @@ func build_left_zone() -> void:
 	wild_rat(at(1, -2, 0.1))
 	wild_rat(at(2, -1, 0.1))
 	say("Plates", at(1, -1), Vector3(5, 3, 1.5), "Rat King", [
-		"Two plates, two subjects each. Time to divide the court. [Left click rats to tag them, then command]"])
+		"two plates, two rats each. gotta split the crew up. [left click rats to tag em, then command]"])
 
 	# C
 	for x in 3:
@@ -256,7 +256,7 @@ func build_right_zone() -> void:
 
 	tube("Right", Vector3(3, 0, 6), 180.0, "Orange", "hideout.tscn", "FromRight", "PlayerSpawn")
 	say("Arrive", at(1, 1), Vector3(5, 3, 3), "Scientist", [
-		"It's learning faster than the others did. Fascinating. And a little worrying."])
+		"it's learning faster than the others... FASCINATING. also a little terrifying. mostly fascinating."])
 
 	# B
 	for cell: Vector2i in [Vector2i(0, -2), Vector2i(1, -2), Vector2i(1, -4), Vector2i(2, -4)]:
@@ -268,7 +268,7 @@ func build_right_zone() -> void:
 	wild_rat(at(0, -5, 0.1))
 	wild_rat(at(2, -5, 0.1))
 	say("Slalom", at(1, -1), Vector3(5, 3, 1.5), "Rat King", [
-		"Spikes between the button and the door. My subjects only faint. They always find their way back to me."])
+		"spikes all over. relax, my guys just faint, they always find me again. tough little idiots."])
 
 	# C
 	put("res://Scenes/key.tscn", at(0, -10, 2.3))
@@ -303,11 +303,11 @@ func build_final_zone() -> void:
 	put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
 	_light(at(1, -7, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
 	say("Glass", at(1, -3), Vector3(5, 3, 1.5), "Scientist", [
-		"Ah, K-1. All this way for the cheese. Again.",
-		"You'll need far more friends than that to get through this glass."])
+		"ahh, K-1. all this way for the cheese... again.",
+		"you'll need a LOT more friends to get through MY glass. a LOT more! mwahahaha!"])
 	say("Glass2", at(1, -4), Vector3(5, 3, 1.5), "Rat King", [
-		"Again? Why does that cheese smell so... familiar?",
-		"No matter. Ninety-nine subjects, and nothing in this Lab will stop us."])
+		"again?? whaddya mean again...",
+		"whatever. ninety-nine of my guys and that glass is history. that cheese is MINE."])
 	finish("final_zone.tscn")
 
 

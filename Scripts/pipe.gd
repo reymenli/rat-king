@@ -7,7 +7,7 @@ extends Area3D
 @export var completes_zone := ""
 ## Zones that must be finished before this pipe opens.
 @export var requires_zones: PackedStringArray
-@export var sealed_line := "Sealed. The left and right wings must bow to me first."
+@export var sealed_line := "locked up tight. gotta clear the left and right wings first."
 
 
 func _ready() -> void:

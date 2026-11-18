@@ -83,6 +83,13 @@ The player plays the clips from `player.gd` `_animate()` (Walk, Run, Jump, Idle)
 
 `rat_structure.gd` mixes the three rat models, plays Form (staggered) then Brace when a Bridge or Stack is built, and `release()` plays HopOut before freeing the structure.
 
+## Character direction (from the user, 11/17/26)
+
+- **Rat King:** a mutated rat with human-like traits, scrappy, not fancy and not heroic (no cape, no suit). Personality close to Deadlock's Rat King: gruff New York street rat, distrusts humans and "smart guys", calls his rats idiots but they're his idiots and he protects them. Obsessed with the cheese.
+- **Scientist:** the mad scientist trope, like Dr. Neo Cortex (Crash Bandicoot) or the PvZ scientist zombie: huge head, cackling, megalomaniac, ALL CAPS outbursts.
+- **Dialogue:** casual, lowercase is fine, rough grammar on purpose. Keep it short. Control hints go in [brackets].
+- **Modeling rules** (research notes): exaggerated proportions first, one mirrored mesh per body (no stacked primitives poking through each other), clear silhouette, detail only on the face, expressive eyes, limited palette with light/dark gradients, an attitude in the rest pose.
+
 ## Known gaps and decisions
 
 - Bridge needs 6 rats and Stack 4 (the constants already in `rat_manager.gd`), the GDD says they are free. The tutorial gives exactly 6 rats.
