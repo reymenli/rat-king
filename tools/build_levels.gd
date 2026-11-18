@@ -26,6 +26,7 @@ var triggers: Node3D
 var lights: Node3D
 var hideout := false  # which kit the shell is built from
 
+var bare_floor := {}  # cells whose floor is a hazard tile instead
 var cells := {}  # Vector2i -> {h = floor height, top = ceiling height, room = id}
 var rooms: Array[Rect2i] = []
 var portals := {}  # edge -> "open" (no wall), "doorway" (frame only), "door" (frame and sliding door)
@@ -292,38 +293,64 @@ func build_right_zone() -> void:
 
 func build_final_zone() -> void:
 	begin("FinalZone", false)
-	room(0, 0, 3, 3, 4.5)  # A: arrival
-	room(0, -5, 3, 5)  # B: observation corridor
-	room(0, -8, 3, 3)  # C: the cheese chamber, behind glass for now
+	room(0, 0, 3, 3, 4.5)  # A: arrival, a cracked wall ahead
+	room(0, -6, 3, 6)  # B: the live floor hall, too long to bridge: ride the Vehicle
+	room(0, -10, 3, 4, 4.5)  # C: the scientist guards the cheese
 	for x in 3:
 		portal(Vector2i(x, 2), Vector2i(x, 3), "open")
-		portal(Vector2i(x, -5), Vector2i(x, -6), "open")
-		var glass := put(LAB + "architecture/glass/SM_Glass_Wall_2x3.glb", at(x, -5) + Vector3(0, 0, -1), 0.0, geo)
-		glass.scale.x = 0.96  # neighbouring frames and the side walls would overlap and flicker
-		glass.add_to_group("ratazord_glass", true)
-	portal(Vector2i(1, 0), Vector2i(1, -1), "open")  # a cracked wall fills it, Giant Fist breaks it
+	portal(Vector2i(1, 0), Vector2i(1, -1), "open")  # cracked walls fill these, Giant Fist breaks them
+	portal(Vector2i(1, -6), Vector2i(1, -7), "open")
+	for x in 3:
+		for z in [-5, -4, -3, -2]:
+			bare_floor[Vector2i(x, z)] = true
 	build_shell()
-	var cracked := put(LAB + "architecture/walls/SM_Wall_Breakable_2x3.glb", Vector3(3, 0, 0), 0.0, geo)
-	cracked.add_to_group("breakable", true)
+
+	tube("Final_Sealed", Vector3(3, 0, 6), 180.0, "Red", "hideout.tscn", "FromFinal", "PlayerSpawn")
+
+	# A
+	for z in [0.0, -12.0]:
+		var cracked := put(LAB + "architecture/walls/SM_Wall_Breakable_2x3.glb", Vector3(3, 0, z), 0.0, geo)
+		cracked.add_to_group("breakable", true)
 	say("Crack", at(1, 1), Vector3(5, 3, 2), "Rat King", [
 		"cracked wall. a big enough fist goes right through that. [aim at the wall, Q, Fist]"])
 
-	tube("Final_Sealed", Vector3(3, 0, 6), 180.0, "Red", "hideout.tscn", "FromFinal", "PlayerSpawn")
-	put(HIDE + "furniture/SM_Hide_Cheese_Table.glb", at(1, -7), 0.0, geo)
-	var cheese := put("res://assets/models/cheese.glb", at(1, -7, 1.09) + Vector3(0.5, 0, 0))
+	# B: 8 m of live floor, wall to wall
+	for x in 3:
+		for z in [-5, -4, -3, -2]:
+			hazard_floor(LAB + "hazards/SM_ElectricFloor_2x2.glb", at(x, z))
+	mount(LAB + "signage/signs/SM_Sign_Electric.glb", Vector2i(0, -1), Vector2i(-1, 0), 1.5)
+	say("Hall", at(1, -1), Vector3(5, 3, 1.5), "Rat King", [
+		"floor's live the whole way. too long for a bridge. boys, gimme a ride. [Q, Vehicle. Follow gets off]"])
+	say("Crack2", at(1, -6), Vector3(5, 3, 1.5), "Rat King", [
+		"another one. fist it."])
+
+	# C: the scientist stands guard in front of the cheese, the last rat hides behind him
+	put(HIDE + "furniture/SM_Hide_Cheese_Table.glb", at(1, -10), 0.0, geo)
+	var cheese := put("res://assets/models/cheese.glb", at(1, -10, 1.09) + Vector3(0.5, 0, 0))
 	cheese.name = "Cheese"
-	var pickup := _trigger("CheesePickup", "res://Scripts/cheese_pickup.gd", at(1, -7, 1.0), Vector3(2.4, 2, 2.4))
+	var pickup := _trigger("CheesePickup", "res://Scripts/cheese_pickup.gd", at(1, -10, 1.0), Vector3(2.4, 2, 2.4))
 	pickup.cheese = cheese
-	var scientist := put("res://assets/models/characters/scientist/SK_Scientist.glb", at(0, -6) + Vector3(0.3, 0, 0.2), 20.0)  # gloating at the glass
+	var scientist := put("res://assets/models/characters/scientist/SK_Scientist.glb", at(1, -9), 0.0)
 	scientist.name = "Scientist"
 	scientist.add_to_group("scientist", true)
-	_light(at(1, -7, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
-	say("Glass", at(1, -3), Vector3(5, 3, 1.5), "Scientist", [
-		"ahh, K-1. all this way for the cheese... again.",
-		"you'll need a LOT more friends to get through MY glass. a LOT more! mwahahaha!"])
-	say("Glass2", at(1, -4), Vector3(5, 3, 1.5), "Rat King", [
-		"again?? whaddya mean again...",
-		"whatever. ninety-nine of my guys and that glass is history. that cheese is MINE. [Q, Ratazord]"])
+	var guard := StaticBody3D.new()  # he blocks the room, wall to wall, until Ratazord moves him
+	guard.name = "Guard"
+	guard.collision_layer = 16  # layer 5: only the player bumps into him, rats run past his legs
+	guard.collision_mask = 0
+	scientist.add_child(guard)
+	guard.owner = level
+	var guard_shape := CollisionShape3D.new()
+	guard_shape.shape = BoxShape3D.new()
+	guard_shape.shape.size = Vector3(6.0, 3.0, 0.6)
+	guard_shape.position.y = 1.5
+	guard.add_child(guard_shape)
+	guard_shape.owner = level
+	var last_rat := put("res://Scenes/rats.tscn", at(1, -9, 0.1) + Vector3(0.4, 0, -0.9), 0.0, rats)
+	last_rat.name = "LastRat"
+	last_rat.process_mode = Node.PROCESS_MODE_DISABLED  # comes out in the cutscene
+	var meet := _trigger("Encounter", "res://Scripts/final_encounter.gd", at(1, -7, 0.0) + Vector3(0, 1.5, 0), Vector3(6, 3, 2))
+	meet.last_rat = last_rat
+	_light(at(1, -10, 2.2), Color(1.0, 0.85, 0.3), 3.0, 5.0)
 	finish("final_zone.tscn")
 
 
@@ -331,6 +358,7 @@ func build_final_zone() -> void:
 
 func begin(level_name: String, use_hideout_kit: bool) -> void:
 	hideout = use_hideout_kit
+	bare_floor = {}
 	cells.clear()
 	rooms.clear()
 	portals.clear()
@@ -420,7 +448,8 @@ func build_shell() -> void:
 	var done := {}
 	for cell: Vector2i in cells:
 		var info: Dictionary = cells[cell]
-		put(piece("floors", "Floor_2x2"), at(cell.x, cell.y, info.h), 0.0, geo)
+		if not bare_floor.has(cell):  # hazard tiles replace the floor there
+			put(piece("floors", "Floor_2x2"), at(cell.x, cell.y, info.h), 0.0, geo)
 		put(piece("ceilings", "Ceiling_2x2"), at(cell.x, cell.y, info.top), 0.0, ceilings)
 		for dir in DIRS:
 			var edge := _edge(cell, cell + dir)
@@ -612,6 +641,7 @@ func finish(file_name: String) -> void:
 	mesh.agent_radius = 0.25  # rats are small
 	mesh.agent_height = 0.5
 	mesh.agent_max_climb = 0.25
+	mesh.geometry_collision_mask = 1  # world only, so the scientist's guard box doesn't cut the navmesh
 	geo.navigation_mesh = mesh
 	var source := NavigationMeshSourceGeometryData3D.new()
 	NavigationServer3D.parse_source_geometry_data(mesh, source, geo)

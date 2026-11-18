@@ -16,7 +16,7 @@ const STACK_RATS := 4
 const BRIDGE_RATS := 6
 const VEHICLE_RATS := 20
 const FIST_RATS := 30
-const RATAZORD_RATS := 99  # every rat but the last, who waits behind the scientist
+const RATAZORD_RATS := 100  # the last one joins in the final zone, from behind the scientist
 const FIST_RANGE := 12.0
 const RAT_MODEL := preload("res://assets/models/characters/rats/SK_Rat_E.glb")
 var structures: Array[Rat_Structure] = []
@@ -212,45 +212,42 @@ func _breakable_under_crosshair() -> Node3D:
 	return null
 
 
-# Ratazord: the finale. A giant rat smashes the glass and sends the scientist flying,
-# then the last rat (who was behind the scientist) joins as the 100th.
+# Ratazord: the finale. The rats pile up into a giant rat mech that charges the scientist
+# and smacks him out of the way of the cheese.
 func _ratazord() -> void:
 	var scientist := get_tree().get_first_node_in_group("scientist") as Node3D
 	if scientist == null:
 		_say("Rat King", "not here. save it for the guy with the cheese.")
 		return
-	var glass := get_tree().get_nodes_in_group("ratazord_glass")
 	var target := scientist.global_position
-	if not glass.is_empty():
-		target = (glass[0] as Node3D).global_position
-		for pane in glass:
-			target = target.lerp((pane as Node3D).global_position, 0.5)
 	var mech := RAT_MODEL.instantiate() as Node3D
 	mech.top_level = true
 	add_child(mech)
-	mech.global_position = player.global_position - Vector3.UP * 0.85
+	var start := player.global_position - Vector3.UP * 0.85
+	mech.global_position = start
 	mech.scale = Vector3.ONE * 0.5
-	mech.look_at(Vector3(target.x, mech.global_position.y, target.z), Vector3.UP, true)
+	mech.look_at(Vector3(target.x, start.y, target.z), Vector3.UP, true)
 	(mech.get_node("AnimationPlayer") as AnimationPlayer).play("Run")
 	_say("Scientist", "wait. WAIT. that's not... that's not POSSIBLE--")
+	var stop := target + (start - target).normalized() * 1.2  # charge right up to him
 	var tween := create_tween()
-	tween.tween_property(mech, "scale", Vector3.ONE * 7.0, 0.8).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(mech, "global_position", Vector3(target.x, mech.global_position.y, target.z), 0.7).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(mech, "scale", Vector3.ONE * 6.0, 0.8).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(mech, "global_position", Vector3(stop.x, start.y, stop.z), 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_callback(func() -> void:
-		for pane in get_tree().get_nodes_in_group("ratazord_glass"):
-			pane.queue_free()
-		var away := (scientist.global_position - target).normalized() * 6.0 + Vector3.UP * 3.0
+		var manager := get_tree().get_first_node_in_group("level_manager") as Level_Manager
+		if manager:
+			manager.scientist_gone = true
+		var away := (target - start).normalized() * 3.0 + Vector3.RIGHT * 6.0 + Vector3.UP * 4.0  # smacked sideways out of the way
 		var fly := create_tween().set_parallel()
 		fly.tween_property(scientist, "global_position", scientist.global_position + away, 0.9)
-		fly.tween_property(scientist, "rotation:x", scientist.rotation.x - TAU * 2.0, 0.9)
+		fly.tween_property(scientist, "rotation:z", scientist.rotation.z - TAU * 2.0, 0.9)
 		fly.chain().tween_callback(scientist.queue_free)
 		_say("Scientist", "NOOOOooo..."))
 	tween.tween_interval(0.6)
 	tween.tween_property(mech, "scale", Vector3.ZERO, 0.4)
 	tween.tween_callback(mech.queue_free)
 	tween.tween_callback(func() -> void:
-		add_to_bank(1)  # the last rat was waiting behind him
-		_say("Rat King", "that's what ya get, four-eyes. and that makes a hundred. now... the cheese."))
+		_say("Rat King", "that's what ya get, four-eyes. now... the cheese."))
 
 
 func _on_ability_chosen(ability: COMMAND) -> void:

@@ -165,25 +165,43 @@ func _initialize() -> void:
 	rat_manager.command(Rat_Manager.COMMAND.FOLLOW)
 	check(not player.in_vehicle, "Follow gets off the Vehicle")
 
-	# Giant Fist breaks the cracked wall
-	var cracked := manager._level.get_tree().get_nodes_in_group("breakable")
-	check(cracked.size() == 1, "the final zone has a cracked wall")
+	# Giant Fist breaks the cracked wall into the hall
+	var cracked := get_nodes_in_group("breakable")
+	check(cracked.size() == 2, "the final zone has two cracked walls")
 	move_player(Vector3(3, 1, 2.5))
-	player.aim_collider = cracked[0].get_child(0)
-	player.aim_point = (cracked[0] as Node3D).global_position + Vector3.UP
-	rat_manager._fist()
-	await wait(1.0)
+	await punch(cracked[0])
 	check(not is_instance_valid(cracked[0]), "Giant Fist breaks the cracked wall")
 
-	# Ratazord smashes the glass and sends the scientist flying, the last rat joins
-	move_player(Vector3(3, 1, -6))
-	await wait(0.3)
+	# the live floor hall: hurts on foot, not on the Vehicle
+	var hurt_count: int = hurts[0]
+	move_player(Vector3(3, 1, -5), false)
+	await wait(0.5)
+	check(hurts[0] > hurt_count, "the live floor hall hurts on foot")
+	rat_manager.command(Rat_Manager.COMMAND.VEHICLE)
+	hurt_count = hurts[0]
+	move_player(Vector3(3, 1, -5), false)
+	await wait(0.5)
+	check(hurts[0] == hurt_count, "the Vehicle crosses the live floor")
+	move_player(Vector3(3, 1, -10.5))
+	rat_manager.command(Rat_Manager.COMMAND.FOLLOW)
+	await punch(cracked[1])
+	check(not is_instance_valid(cracked[1]), "Giant Fist breaks the second wall")
+
+	# the scientist blocks the way, the last rat comes out from behind him: 100 rats
+	move_player(Vector3(3, 1, -13))
+	await wait(5.0)
+	check(rat_manager.rat_total == 100, "the last rat joins from behind the scientist: 100 rats")
+	move_player(Vector3(3, 1, -15), false)
+	await wait(0.5)
+	check(player.global_position.z > -16.5, "the scientist blocks the way to the cheese")
+
+	# Ratazord smacks him out of the way
 	rat_manager.command(Rat_Manager.COMMAND.RATAZORD)
 	await wait(4.0)
-	check(get_nodes_in_group("ratazord_glass").is_empty() and get_nodes_in_group("scientist").is_empty() and rat_manager.rat_total == 100, "Ratazord breaks the glass, the scientist goes flying, 100 rats")
+	check(get_nodes_in_group("scientist").is_empty() and manager.scientist_gone, "Ratazord smacks the scientist out of the way")
 
-	# take the cheese, bring it home, win
-	move_player(Vector3(3, 1, -13))
+	# take the cheese, bring it home, win (every time it's touched)
+	move_player(Vector3(3, 1, -19))
 	await wait(0.3)
 	check(manager.has_cheese, "touching the cheese takes it")
 	manager.go_to("res://Scenes/levels/hideout.tscn", "FromTutorial")
@@ -191,6 +209,15 @@ func _initialize() -> void:
 	move_player(Vector3(7, 1, 8.1))  # inside the trophy trigger, just off the table
 	await wait(0.3)
 	check(manager.won and paused, "the cheese on the hideout table shows the win screen")
+	paused = false
+	for node in manager.get_children():
+		if node is CanvasLayer and node.get_script() == preload("res://Scripts/win_screen.gd"):
+			node.queue_free()
+	move_player(Vector3(7, 1, 11))
+	await wait(0.3)
+	move_player(Vector3(7, 1, 8.1))
+	await wait(0.3)
+	check(paused, "touching the cheese again shows the win screen again")
 	paused = false
 
 	print("smoke test: %d failure(s)" % failures)
@@ -202,6 +229,13 @@ func move_player(pos: Vector3, mark_safe := true) -> void:
 	player.velocity = Vector3.ZERO
 	if mark_safe:
 		player.reset_safe_spot()
+
+
+func punch(wall: Node3D) -> void:
+	player.aim_collider = wall.get_child(0)
+	player.aim_point = wall.global_position + Vector3.UP
+	rat_manager._fist()
+	await wait(1.0)
 
 
 func press_esc() -> void:

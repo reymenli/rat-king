@@ -10,7 +10,9 @@ extends Node
 var zones_done := {}  # zone name -> true, used to unseal the final pipe
 var dialogue_seen := {}  # "Area/Trigger" -> true, so lines play once per run
 var has_cheese := false  # taken in the final zone, shows on the hideout table
-var won := false  # the win screen has been shown
+var won := false  # the cheese has been brought home at least once
+var last_rat_joined := false  # the 100th rat came out from behind the scientist
+var scientist_gone := false  # Ratazord knocked him out of the way
 
 var _level: Node
 
